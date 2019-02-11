@@ -1,0 +1,7 @@
+# dont include data in the repo
+*.csv
+*.xlsx
+
+# dont include office files
+*.docx
+*.pptx
