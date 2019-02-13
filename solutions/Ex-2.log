@@ -1,0 +1,2385 @@
+*------------------------------------------------------------*
+User:                sasdemo
+Date:                February 13, 2019
+Time:                17:04:29
+Site:                70068130
+Platform:            X64_S08R2
+Maintenance Release: 9.04.01M4P110916
+EM Version:          14.2
+* 
+*------------------------------------------------------------*
+* Training Log
+Date:                February 13, 2019
+Time:                17:03:46
+*------------------------------------------------------------*
+15253  proc freq data=EMWS3.EMOPEN_VariableSet noprint;
+15254  table ROLE*LEVEL/out=WORK.EMOPENMETA;
+15255  run;
+ 
+NOTE: There were 59 observations read from the data set EMWS3.EMOPEN_VARIABLESET.
+NOTE: The data set WORK.EMOPENMETA has 3 observations and 4 variables.
+NOTE: PROCEDURE FREQ used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+ 
+ 
+15256  proc print data=WORK.EMOPENMETA label noobs;
+15257  var ROLE LEVEL COUNT;
+15258  label ROLE = "%sysfunc(sasmsg(sashelp.dmine, meta_role_vlabel, NOQUOTE))" LEVEL = "%sysfunc(sasmsg(sashelp.dmine, meta_level_vlabel, NOQUOTE))" COUNT = "%sysfunc(sasmsg(sashelp.dmine, rpt_count_vlabel, NOQUOTE))";
+15259  title9 ' ';
+15260  title10 "%sysfunc(sasmsg(sashelp.dmine, rpt_varSummary_title  , NOQUOTE))";
+15261  run;
+ 
+NOTE: There were 3 observations read from the data set WORK.EMOPENMETA.
+NOTE: The PROCEDURE PRINT printed page 1.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+ 
+ 
+15262  title10;
+ 
+15263  %let EMNORLEN = %DMNORLEN;
+EMWS3.VarClus_TRAIN EMWS3.VarClus_TRAIN
+EMWS3.VarClus_TRAIN EMWS3.VarClus_TRAIN EMWS3 VarClus_TRAIN
+EMWS3.VarClus_TRAIN EMWS3.VarClus_TRAIN
+EMWS3.VarClus_TRAIN EMWS3.VarClus_TRAIN EMWS3 VarClus_TRAIN
+Executing  SASHELP.EMCORE.EMINFOITERATOR.SCL _INIT >>
+Executing  SASHELP.EMCORE.EMINFOITERATOR.SCL setMetaData >>
+Executing  SASHELP.EMCORE.EMINFOITERATOR.SCL next >>
+Executing  SASHELP.EMCORE.EMINFOITERATOR.SCL next >>
+Executing  SASHELP.EMCORE.EMINFOITERATOR.SCL setMetaData >>
+Executing  SASHELP.EMCORE.EMINFOITERATOR.SCL next >>
+Executing  SASHELP.EMCORE.EMINFOITERATOR.SCL next >>
+Executing  SASHELP.EMCORE.EMINFOITERATOR.SCL _term >>
+15292  data WORK.EMOPEN_EVENT(KEEP=VARIABLE LABEL LEVEL EVENT NUMLEVELS ORDER);
+15293  length ORDER $20;
+15294  label VARIABLE = "%sysfunc(sasmsg(sashelp.dmine, rpt_target_vlabel,  NOQUOTE))" EVENT = "%sysfunc(sasmsg(sashelp.dmine, assmt_event_vlabel, NOQUOTE))" NUMLEVELS = "%sysfunc(sasmsg(sashelp.dmine, rpt_numcat_vlabel, NOQUOTE))" LEVEL =
+15295     "%sysfunc(sasmsg(sashelp.dmine, meta_level_vlabel, NOQUOTE))" ORDER = "%sysfunc(sasmsg(sashelp.dmine, meta_order_vlabel, NOQUOTE))" LABEL = "%sysfunc(sasmsg(sashelp.dmine, meta_label_vlabel, NOQUOTE))";
+15296  set EMWS3.IDS_TARGET_DM( where=(_TYPE_="TARGET"));
+15297  NumLevels=2;
+15298  select(upcase(ORDER));
+15299  when('DESC') ORDER = 'Descending';
+15300  when('ASC') ORDER = 'Ascending';
+15301  when('FMTDESC') ORDER = 'Formatted Descending';
+15302  when('FMTASC') ORDER = 'Formatted Ascending';
+15303  otherwise ORDER = 'Descending';
+15304  end;
+15305  output;
+15306  run;
+ 
+NOTE: There were 1 observations read from the data set EMWS3.IDS_TARGET_DM.
+      WHERE _TYPE_='TARGET';
+NOTE: The data set WORK.EMOPEN_EVENT has 1 observations and 6 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+ 
+ 
+15307  title9 ' ';
+15308  proc print data=WORK.EMOPEN_EVENT noobs label;
+15309  var VARIABLE EVENT LEVEL NUMLEVELS ORDER LABEL;
+15310  title9 ' ';
+15311  title10 "%sysfunc(sasmsg(sashelp.dmine, rpt_modelEvent_title  , NOQUOTE))";
+15312  run;
+ 
+NOTE: There were 1 observations read from the data set WORK.EMOPEN_EVENT.
+NOTE: The PROCEDURE PRINT printed page 2.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+15313  title10;
+ 
+"No decisions defined for target "target"."
+15314  proc print data = EMWS3.Ids_target_DM noobs label;
+15315  var _type_ variable label;
+15316  where _type_ ^in('MATRIX', 'DECISION', 'TRAINPRIOR', 'DATAPRIOR', 'DECPRIOR');
+15317  label _TYPE_ = "%sysfunc(sasmsg(sashelp.dmine, rpt_type_vlabel,     NOQUOTE))" VARIABLE = "%sysfunc(sasmsg(sashelp.dmine, rpt_variable_vlabel, NOQUOTE))" LABEL = "%sysfunc(sasmsg(sashelp.dmine, meta_label_vlabel, NOQUOTE))";
+15318  title9 ' ';
+15319  title10 "%sysfunc(sasmsg(sashelp.dmine, rpt_predDecVars_title  , NOQUOTE))";
+15320  run;
+ 
+NOTE: There were 7 observations read from the data set EMWS3.IDS_TARGET_DM.
+      WHERE _type_ not in ('DATAPRIOR', 'DECISION', 'DECPRIOR', 'MATRIX', 'TRAINPRIOR');
+NOTE: The PROCEDURE PRINT printed page 3.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+15321  title10;
+ 
+15322  %let EMEXCEPTIONSTRING=;
+PERFORMANCE  DETAILS
+15813  *------------------------------------------------------------*;
+15814  * EMOPEN: Generation of macros and macro variables;
+15815  * To see the code generated, set the EM_DEBUG macro variable to SOURCE or _ALL_;
+15816  *------------------------------------------------------------*;
+ 
+15817  %let EMEXCEPTIONSTRING=;
+15818  *------------------------------------------------------------*;
+15819  * TRAIN: EMOPEN;
+15820  *------------------------------------------------------------*;
+15821  %let EM_ACTION = TRAIN;
+15822  %let syscc = 0;
+15823
+15824  *******************************************************************************;
+15825  *** MAIN MACRO FOR EM OPEN SOURCE INTEGRATION EXTENSION NODE ******************;
+15826  *******************************************************************************;
+15827
+15828  %macro EM_OPEN_MAIN;
+15829
+15830     %if %upcase("&EM_ACTION")= "CREATE" %then %do;
+15831         filename _create catalog 'sashelp.emutil.em_open_create.source';
+15832         %include _create;
+15833         filename _create;
+15834         %EM_OPEN_CREATE;
+15835     %end;
+15836     %else
+15837     %if %upcase("&EM_ACTION")= "TRAIN" %then %do;
+15838         filename _train catalog 'sashelp.emutil.em_open_train.source';
+15839         %include _train;
+15840         filename _train;
+15841         %EM_OPEN_TRAIN;
+15842     %end;
+15843
+15844  %mend EM_OPEN_MAIN;
+15845
+15846  %EM_OPEN_MAIN;
+NOTE: %INCLUDE (level 1) file _TRAIN is file SASHELP.EMUTIL.EM_OPEN_TRAIN.SOURCE.
+15848 +*******************************************************************************;
+15849 +*** TRAINING MACRO FOR EM R INTEGRATION EXTENSION NODE ************************;
+15850 +*******************************************************************************;
+15852 +%macro EM_OPEN_TRAIN;
+15854 +    *** DECLARE EM_TOOLYTYPE;
+15855 +    %if ("&EM_PROPERTY_R_OUTPUT"= "PMML") %then %do;
+15856 +        %let EM_TOOLTYPE= MODEL;
+15857 +    %end;
+15858 +    %else %do;
+15859 +        %let EM_TOOLTYPE= UTIL;
+15860 +        %if %sysfunc(exist(&EM_DATA_EMINFO)) %then %do;
+15861 +            proc datasets lib= &EM_LIB nowarn nolist noprint;
+15862 +                delete %scan(&EM_DATA_EMINFO., 2, .);
+15863 +            run;
+15864 +        %end;
+15865 +    %end;
+15867 +    *** CHECK FOR CONNECTION TO R;
+15868 +    filename _rcheck "%sysfunc(pathname(WORK))&EM_DSEP.RCHECK.sas" encoding="UTF-8" NOBOM;
+15870 +    data _null_;
+15871 +        file _rcheck;
+15872 +        put 'submit /R;';
+15873 +        put 'endsubmit;';
+15874 +    run;
+15876 +    %let SYSCC= 0;
+15877 +    proc iml;
+15878 +        %include _rcheck /source2;
+15879 +    quit;
+15880 +    filename _rcheck;
+15881 +    %if &SYSCC %then %do;
+15882 +        %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_no_iml_R;
+15883 +        %put &EM_CODEBAR;
+15884 +        %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_no_iml_R_err, NOQUOTE));
+15885 +        %put &ERROR;
+15886 +        %put &EM_CODEBAR;
+15887 +        %goto quit;
+15888 +    %end;
+15890 +    *** IMPORT UTILITY MACROS;
+15891 +    filename _osutil catalog 'sashelp.emutil.em_open_macros.source';
+15892 +    %include _osutil;
+15893 +    filename _osutil;
+15895 +    ***************************************************************************;
+15896 +    *** CHECK FOR IMPORT DATA SOURCES WITHOUT READING PROJECT SETS ************;
+15897 +    ***************************************************************************;
+15899 +    *** POPULATE MACRO ARRAY TO HOLD ONLY EXISTING PARTITIONS;
+15900 +    *** GET NUMBER OF EXISTING PARTITIONS;
+15901 +    data _null_;
+15902 +        length _set $50 _role $20 _set_index $12 _role_index $14 _i 3;
+15903 +        _i=0;
+15905 +        *** TRAIN;
+15906 +        %if (%EM_OPEN_SET_EXISTS(&EM_IMPORT_DATA)) %then %do;
+15907 +            _i=_i+1;                                                        /* INCREMENT ARRAY INDEX */
+15908 +            %EM_OPEN_REGISTER(&EM_IMPORT_DATA, TRAIN, _i);                  /* INSERT INTO MACRO ARRAY */
+15909 +        %end;
+15911 +        *** VALIDATE;
+15912 +        %if (%EM_OPEN_SET_EXISTS(&EM_IMPORT_VALIDATE)) %then %do;
+15913 +            _i=_i+1;
+15914 +            %EM_OPEN_REGISTER(&EM_IMPORT_VALIDATE, VALIDATE, _i);
+15915 +        %end;
+15917 +        *** TEST;
+15918 +        %if (%EM_OPEN_SET_EXISTS(&EM_IMPORT_TEST)) %then %do;
+15919 +            _i=_i+1;
+15920 +            %EM_OPEN_REGISTER(&EM_IMPORT_TEST, TEST, _i);
+15921 +        %end;
+15923 +        *** SCORE;
+15924 +        %if (%EM_OPEN_SET_EXISTS(&EM_IMPORT_SCORE)) %then %do;
+15925 +            _i=_i+1;
+15926 +            %EM_OPEN_REGISTER(&EM_IMPORT_SCORE, SCORE, _i);
+15927 +        %end;
+15929 +        *** TRANSACTION;
+15930 +        %if (%EM_OPEN_SET_EXISTS(&EM_IMPORT_TRANSACTION)) %then %do;
+15931 +            _i=_i+1;
+15932 +            %EM_OPEN_REGISTER(&EM_IMPORT_TRANSACTION, TRANSACTION, _i);
+15933 +        %end;
+15935 +        *** ESTABLISH NUMBER OF INPUT SETS;
+15936 +        call symput('_NUM_IMPORT_SETS', strip(put(_i,1.)));
+15938 +    run;
+15940 +    *** WARN IF NO INPUT PARTITIONS EXIST;
+15941 +    %if ^(&_NUM_IMPORT_SETS) %then %do;
+15942 +        %if ("&EM_PROPERTY_R_OUTPUT" ne "NONE") %then %do;
+15943 +            %let EMEXCEPTIONSTRING= exception.server.IMPORT.NODATA;
+15944 +            %put &EM_CODEBAR;
+15945 +            %let ERROR= %sysfunc(sasmsg(sashelp.dmine, IMPORT.NODATA_ERR, NOQUOTE));
+15946 +            %put &ERROR;
+15947 +            %put &EM_CODEBAR;
+15948 +            %goto quit;
+15949 +        %end;
+15950 +    %end;
+15952 +    ***************************************************************************;
+15953 +    *** START R TRAINING ******************************************************;
+15954 +    ***************************************************************************;
+15956 +    %if ("&EM_PROPERTY_LANGUAGE"= "R") %then %do;
+15958 +        ***********************************************************************;
+15959 +        *** CREATE FILE TO INCLUDE IN PROC IML CALL ***************************;
+15960 +        *** CONTAINS R STATEMENTS AND IML SUBMIT STATEMENT ********************;
+15961 +        ***********************************************************************;
+15963 +        *** TRY FOR FILE I/O, RAISE EXCEPTION ON FAILURE;
+15964 +        %EM_GETNAME(
+15965 +            key= SUBMIT,
+15966 +            type= FILE
+15967 +        );
+15969 +        *** IF FILE DOES NOT EXIST, THEN EXIT;
+15970 +        %if ^%sysfunc(fileexist(&EM_USER_SUBMIT)) %then %do;
+15971 +            %put &EM_CODEBAR;
+15972 +            %let WARNING= %sysfunc(sasmsg(sashelp.dmine, opensource_no_input_code_warn, NOQUOTE, &EM_USER_SUBMIT));
+15973 +            %put &WARNING;
+15974 +            %put &EM_CODEBAR;
+15975 +            %goto quit;
+15976 +        %end;
+15978 +        filename _submit "&EM_USER_SUBMIT" encoding="UTF-8" NOBOM;
+15979 +                                                                            /* FILE CREATED PREVIOUSLY BY CODE EDITOR - NO IML SUBMIT STATMENTS*/
+15981 +        *** IF FILE IS BLANK, THEN EXIT;
+15982 +        %let _FID= %sysfunc(fopen(_submit));
+15983 +        %if &_FID > 0 %then %do;
+15984 +            %let _BLANK= 1;
+15985 +            %let _rc= 0;
+15986 +            %do %while((&_BLANK) and ^(&_rc));
+15987 +                %let _rc= %sysfunc(fread(&_FID));
+15988 +                %let _x= %sysfunc(fget(&_FID, _LINE));
+15989 +                %if ^(%nrbquote(%sysfunc(compress("&_LINE", ,s)))= "") %then %let _BLANK= 0;
+15990 +                %let _LINE= ;
+15991 +            %end;
+15992 +            %if (&_BLANK) %then %do;
+15993 +                %put &EM_CODEBAR;
+15994 +                %let WARNING= %sysfunc(sasmsg(sashelp.dmine, opensource_blank_input_code_warn, NOQUOTE, &EM_USER_SUBMIT));
+15995 +                %put &WARNING;
+15996 +                %put &EM_CODEBAR;
+15997 +                %let rc= %sysfunc(fclose(&_FID));
+15998 +                %goto quit;
+15999 +            %end;
+16000 +            %let rc= %sysfunc(fclose(&_FID));
+16001 +        %end;
+16002 +        %else %do;
+16003 +            %put &EM_CODEBAR;
+16004 +            %let WARNING= %sysfunc(sasmsg(sashelp.dmine, opensource_no_input_code_warn, NOQUOTE, &EM_USER_SUBMIT));
+16005 +            %put &WARNING;
+16006 +            %put &EM_CODEBAR;
+16007 +            %goto quit;
+16008 +        %end;
+16010 +        %if (&_NUM_IMPORT_SETS) %then %do;                                  /* IF IMPORT DATA IS PRESENT, DEFINE HANDLES */
+16012 +            ***********************************************************************;
+16013 +            *** CREATE INPUT AND TARGET INFO FOR R ********************************;
+16014 +            ***********************************************************************;
+16016 +            *** TRY PROJECT DATA READ, RAISE EXCEPTION ON FAILURE;
+16017 +            %if ^%EM_OPEN_SET_EXISTS(&EM_DATA_VARIABLESET) %then %do;
+16018 +                %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_no_variableset, &EM_DATA_VARIABLESET;
+16019 +                %put &EM_CODEBAR;
+16020 +                %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_no_variableset_err, NOQUOTE, &EM_DATA_VARIABLESET));
+16021 +                %put &ERROR;
+16022 +                %put &EM_CODEBAR;
+16023 +                %goto quit;
+16024 +            %end;
+16026 +            ***********************************************************************;
+16027 +            *** CREATE INPUTS AND TARGETS *****************************************;
+16028 +            ***********************************************************************;
+16030 +            data _vars(keep= USE NAME ROLE TYPE LEVEL);
+16031 +                set &EM_DATA_VARIABLESET
+16032 +                (where= ((use= 'Y' or use= 'D') and
+16033 +                ROLE in ('TARGET','INPUT','REJECTED')));
+16034 +            run;
+16036 +            *** ESTABLISH MACRO FOR NUMERIC INPUTS;
+16037 +            %EM_OPEN_VARMACRO(
+16038 +                _NAME= EM_R_NUMERIC_INPUT,
+16039 +                _METADATA= _vars,
+16040 +                _WHERE= %NRBQUOTE((TYPE= 'N' and (ROLE ='INPUT' and USE in ('Y','D')) and LEVEL= 'INTERVAL') or (TYPE= 'N' and (USE= 'Y' and ROLE= 'REJECTED') and LEVEL= 'INTERVAL')),
+16041 +                _DELIM= +,
+16042 +                _KEY= NAME,
+16043 +                _NUMMACRO= EM_NUM_R_NUMERIC_INPUT
+16044 +            );
+16046 +            *** ESTABLISH CLASS INPUTS;
+16047 +            %EM_OPEN_VARMACRO(
+16048 +                _NAME= EM_R_FACTOR_INPUT,
+16049 +                _METADATA= _vars,
+16050 +                _WHERE= %NRBQUOTE(((ROLE ='INPUT' and USE in ('Y','D')) and LEVEL ne 'INTERVAL') or ((USE= 'Y' and ROLE= 'REJECTED') and LEVEL ne 'INTERVAL')),
+16051 +                _DELIM= + ,
+16052 +                _KEY= NAME,
+16053 +                _NUMMACRO= EM_NUM_R_FAC_INPUT
+16054 +            );
+16056 +            *** ESTABLISH MACRO FOR CHARACTER INPUTS;
+16057 +            %EM_OPEN_VARMACRO(
+16058 +                _NAME= EM_R_CHAR_INPUT,
+16059 +                _METADATA= _vars,
+16060 +                _WHERE= %NRBQUOTE((TYPE= 'C' and (ROLE ='INPUT' and USE in ('Y','D'))) or (TYPE= 'C' and (USE= 'Y' and ROLE= 'REJECTED'))),
+16061 +                _DELIM= +,
+16062 +                _KEY= NAME,
+16063 +                _NUMMACRO= EM_NUM_R_CHAR_INPUT
+16064 +            );
+16066 +            proc datasets lib= WORK nolist nowarn noprint;
+16067 +                delete _vars;
+16068 +            run;
+16070 +            /* TRUNCATE SAS TARGET NAME TO r+21 CHARS */
+16071 +            /* FOR Predicted_r123456789012345678921 */
+16073 +            *** ESTABLISH MACRO FOR TARGET, FOR SUPERVISED TRAINING;
+16074 +            %if ("&EM_PROPERTY_TRAINMODE"= "SUPERVISED") %then %do;
+16075 +                %if %eval(&EM_NUM_INTERVAL_TARGET= 1) %then %let EM_R_NUMERIC_TARGET= r%EM_INTERVAL_TARGET;
+16076 +                %else %let EM_R_NUMERIC_TARGET=;
+16077 +                %if (%LENGTH(&EM_R_NUMERIC_TARGET) > 21) %then
+16078 +                    %let EM_R_NUMERIC_TARGET= %SUBSTR(&EM_R_NUMERIC_TARGET, 1, 22);
+16079 +                %if %eval(&EM_NUM_BINARY_TARGET + &EM_NUM_NOMINAL_TARGET + &EM_NUM_ORDINAL_TARGET = 1) %then
+16080 +                    %let EM_R_FACTOR_TARGET= r%CMPRES(%EM_BINARY_TARGET %EM_NOMINAL_TARGET %EM_ORDINAL_TARGET);
+16081 +                %else %let EM_R_FACTOR_TARGET=;
+16082 +                %if (%LENGTH(&EM_R_FACTOR_TARGET) > 22) %then
+16083 +                    %let EM_R_FACTOR_TARGET= %SUBSTR(&EM_R_FACTOR_TARGET, 1, 22);
+16084 +            %end;
+16086 +        %end;                                                               /* END DEFINE HANDLES */
+16088 +        ***********************************************************************;
+16089 +        *** PRINT VARIABLE HANDLES TO OUTPUT **********************************;
+16090 +        ***********************************************************************;
+16092 +        %EM_GETNAME(key= HANDLES, type= DATA);
+16093 +        data &EM_USER_HANDLES;
+16094 +            length name $20 available $3 contents $32767;
+16095 +            label
+16096 +                name= "%sysfunc(sasmsg(sashelp.dmine, opensource_name_vlabel, NOQUOTE))"
+16097 +                available = "%sysfunc(sasmsg(sashelp.dmine, opensource_available_vlabel, NOQUOTE))"
+16098 +                contents= "%sysfunc(sasmsg(sashelp.dmine, opensource_contents_vlabel, NOQUOTE))"
+16099 +            ;
+16100 +            name= 'EMR_NUM_TARGET'; available= ''; contents= '';
+16101 +            %if (%symexist(EM_R_NUMERIC_TARGET) and "&EM_PROPERTY_TRAINMODE"= "SUPERVISED") %then %do;
+16102 +                    available= 'Y'; contents= "&EM_R_NUMERIC_TARGET";
+16103 +            %end;
+16104 +            %else %do; available= 'N'; contents= ''; %end;
+16105 +            contents= strip(contents); output;
+16106 +            name= 'EMR_CLASS_TARGET'; available= ''; contents= '';
+16107 +            %if (%symexist(EM_R_FACTOR_TARGET) and "&EM_PROPERTY_TRAINMODE"= "SUPERVISED") %then %do;
+16108 +                    available= 'Y'; contents= "&EM_R_FACTOR_TARGET";
+16109 +            %end;
+16110 +            %else %do; available= 'N'; contents= ''; %end;
+16111 +            contents= strip(contents); output;
+16112 +            name= 'EMR_NUM_INPUT'; available= ''; contents= '';
+16113 +            %if %symexist(EM_NUM_R_NUMERIC_INPUT) %then %do;
+16114 +                    available= 'Y'; contents= "%EM_R_NUMERIC_INPUT";
+16115 +            %end;
+16116 +            %else %do; available= 'N'; contents= ''; %end;
+16117 +            contents= strip(contents); output;
+16118 +            name= 'EMR_CLASS_INPUT'; available= ''; contents= '';
+16119 +            %if %symexist(EM_NUM_R_FAC_INPUT) %then %do;
+16120 +                    available= 'Y'; contents= "%EM_R_FACTOR_INPUT";
+16121 +            %end;
+16122 +            %else %do; available= 'N'; contents= ''; %end;
+16123 +            contents= strip(contents); output;
+16124 +            name= 'EMR_CHAR_INPUT'; available= ''; contents= '';
+16125 +            %if %symexist(EM_NUM_R_CHAR_INPUT) %then %do;
+16126 +                    available= 'Y'; contents= "%EM_R_CHAR_INPUT";
+16127 +            %end;
+16128 +            %else %do; available= 'N'; contents= ''; %end;
+16129 +            contents= strip(contents); output;
+16130 +        run;
+16132 +        %let _N_OUT_OBS= 0;
+16133 +        %let _DSID= %sysfunc(open(&EM_USER_HANDLES));
+16134 +        %let _N_OUT_OBS= %sysfunc(attrn(&_DSID, NLOBS));
+16135 +        %let _rc= %sysfunc(close(&_DSID));
+16136 +        %if (&_N_OUT_OBS) %then %do;
+16137 +            title "%sysfunc(sasmsg(sashelp.dmine, opensource_handle_title, NOQUOTE))";
+16138 +            proc print data= &EM_USER_HANDLES label noobs; run;
+16139 +            title;
+16140 +            %EM_REPORT(
+16141 +                KEY= HANDLES,
+16142 +                AUTODISPLAY= N,
+16143 +                DESCRIPTION= HANDLES
+16144 +            );
+16145 +        %end;
+16147 +        filename _rsubmit "%sysfunc(pathname(WORK))&EM_DSEP.RSUBMIT.sas" encoding="UTF-8" NOBOM;
+16148 +                                                                            /* FILE TO BE INCLUDED IN PROC IML - CONTAINS IML SUBMIT STATEMENTS */
+16149 +                                                                            /* TWO DIFFERENT FILES BECAUSE OTHER LANGUAGES MAY BE INCLUDED */
+16150 +        *** ADD SUBMIT STATEMENT TO TOP OF FILE;
+16151 +        data _null_;
+16152 +            file _rsubmit;
+16153 +            put '_WORK_DIR= "%sysfunc(getoption(work))";';                  /* PASS SAS WORK LOCATION TO IML */
+16154 +            put '_WORK_DIR= tranwrd(_WORK_DIR, "\", "/");';                 /* ACCOMODATE R AND UNIX */
+16155 +            put 'submit';
+16156 +            put '   _WORK_DIR';
+16157 +            %if (&_NUM_IMPORT_SETS) %then %do;                              /* IF IMPORT DATA IS PRESENT, DEFINE HANDLES IN IML */
+16158 +                put '   EMR_MODEL';
+16159 +                put '   EMR_NUM_INPUT';                                     /* HANDLES FOR SAS VARIABLES IN R */
+16160 +                put '   EMR_CLASS_INPUT';
+16161 +                put '   EMR_CHAR_INPUT';
+16162 +                %if ("&EM_PROPERTY_TRAINMODE"= "SUPERVISED") %then %do;
+16163 +                    put '   EMR_NUM_TARGET';
+16164 +                    put '   EMR_CLASS_TARGET';
+16165 +                %end;
+16166 +                %do _j= 1 %to &_NUM_IMPORT_SETS;                            /* HANDLES FOR SAS INPUT DATA SETS IN R */
+16167 +                    %if ("%TRIM(&&_ROLE&_j)"= "TRAIN") %then %do;
+16168 +                        put "   EMR_IMPORT_DATA";
+16169 +                    %end;
+16170 +                    %else %do;
+16171 +                        put "   %TRIM(EMR_IMPORT_%sysfunc(upcase(&&_ROLE&_j)))";
+16172 +                    %end;
+16173 +                %end;
+16174 +                %if ("&EM_PROPERTY_R_OUTPUT"^= "PMML") %then %do;           /* HANDLES FOR POST SETS TO BE IMPORTED FROM R TO SAS */
+16175 +                    %do _j= 1 %to &_NUM_IMPORT_SETS;                        /* KEEP EXPORTED DATA HANDLES IN NONE MODE FOR DEBUGGING */
+16176 +                        put "   %TRIM(EMR_EXPORT_%sysfunc(upcase(&&_ROLE&_j)))";
+16177 +                    %end;
+16178 +                %end;
+16179 +            %end;
+16180 +            put '/R;';
+16181 +            %if (&_NUM_IMPORT_SETS) %then %do;
+16182 +                %if ("%EM_R_FACTOR_INPUT" ne "") %then %do;                 /* IF IMPORT DATA IS PRESENT, DEFINE FACTOR VARS AND LOAD PMML LIBRARY IN R */
+16183 +                    %do _j= 1 %to %sysfunc(countw(%EM_R_FACTOR_INPUT));     /* ENSURES EM CLASS VARS ARE FACTORS, NOT NUMERICS, IN R */
+16184 +                        %do _k= 1 %to &_NUM_IMPORT_SETS;
+16185 +                            %if ("%TRIM(&&_ROLE&_k)"= "TRAIN") %then %do;   /* USE IML DATA VARIABLE NAME DIRECTLY, INSTEAD OF MACRO TO AVOID WARNINGS */
+16186 +                                %let _NOM_VAR= %sysfunc(compress(EMR_IMPORT_DATA$%scan(%EM_R_FACTOR_INPUT, &_j)));
+16187 +                            %end;
+16188 +                            %else %do;
+16189 +                                %let _NOM_VAR= %sysfunc(compress(EMR_IMPORT_%sysfunc(upcase(&&_ROLE&_k))$%scan(%EM_R_FACTOR_INPUT, &_j)));
+16190 +                            %end;
+16191 +                            put "&_NOM_VAR <- factor(&_NOM_VAR, ordered= FALSE)";
+16192 +                        %end;
+16193 +                    %end;
+16194 +                %end;
+16195 +                %if ("&EM_PROPERTY_TRAINMODE"= "SUPERVISED") %then %do;
+16196 +                    %if (%symexist(EM_R_FACTOR_TARGET) and "&EM_R_FACTOR_TARGET" ne "") %then %do;
+16197 +                        %do _k= 1 %to &_NUM_IMPORT_SETS;
+16198 +                            %if ("%TRIM(&&_ROLE&_k)"= "TRAIN") %then %do;
+16199 +                                %let _NOM_VAR= %sysfunc(compress(EMR_IMPORT_DATA$&EM_R_FACTOR_TARGET));
+16200 +                            %end;
+16201 +                            %else %do;
+16202 +                                %let _NOM_VAR= %sysfunc(compress(EMR_IMPORT_%sysfunc(upcase(&&_ROLE&_k))$&EM_R_FACTOR_TARGET));
+16203 +                            %end;
+16204 +                            put "&_NOM_VAR <- factor(&_NOM_VAR, ordered= FALSE)";
+16205 +                        %end;
+16206 +                    %end;
+16207 +                %end;
+16208 +                %if ("&EM_PROPERTY_R_OUTPUT"= "PMML") %then %do;
+16209 +                    put 'library(pmml)';
+16210 +                %end;
+16211 +            %end;
+16212 +            put 'setwd("&_WORK_DIR")';                                      /* PASS SAS WORK LOCATION TO R - NECESSARY FOR TABLE AND GRAPHICAL OUTPUT */
+16213 +        run;
+16215 +        *** APPEND USER R CODE TO SUBMIT STATEMENT;
+16216 +        filename _copy catalog 'SASHELP.EMUTIL.EM_COPYFILE.SOURCE';
+16217 +        %include _copy;
+16218 +        filename _copy;
+16220 +        %EM_COPYFILE(
+16221 +            infref= _submit,
+16222 +            outfref= _rsubmit,
+16223 +            append= Y
+16224 +        );
+16226 +        filename _submit;
+16228 +        *** APPEND NECESSARY R CODE FOR DATA TRANSFER;
+16229 +        *** APPEND ENDSUBMIT STATEMENT TO BOTTOM OF FILE;
+16230 +        data _null_;
+16231 +            file _rsubmit MOD;
+16232 +            %if (&_NUM_IMPORT_SETS) %then %do;                              /* IF IMPORT DATA IS PRESENT, WRITE R EXPORT STATEMENTS */
+16233 +                %if ("&EM_PROPERTY_R_OUTPUT"= "PMML") %then %do;
+16234 +                    put "emRPMML <- saveXML(pmml(EMR_MODEL), 'emRPMML.xml')";
+16235 +                %end;
+16236 +                %if ("&EM_PROPERTY_R_OUTPUT"= "MERGE") %then %do;           /* THE NUMBER OF POST SETS TO EXPORT FROM R MUST BE RECORDED BEFORE LEAVING R */
+16237 +                    put 'emRExportSet <- vector()';                         /* ARRAY CONTAINING ROLE INDICES */
+16238 +                    %do _j= 1 %to &_NUM_IMPORT_SETS;
+16239 +                        put "if (exists(""%TRIM(EMR_EXPORT_%sysfunc(upcase(&&_ROLE&_j)))"")) {emRExportSet <- c(emRExportSet, &_j)}";
+16240 +                    %end;
+16241 +                %end;
+16242 +            %end;
+16243 +            put 'endsubmit;';
+16244 +        run;
+16246 +        *** CONFIRM FILE I/O, RAISE EXCEPTION ON FAILURE;
+16247 +        %if ^%sysfunc(fexist(_rsubmit)) %then %do;
+16248 +            %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_no_input_code, %sysfunc(pathname(WORK))&EM_DSEP.RSUBMIT.sas;
+16249 +            %put &EM_CODEBAR;
+16250 +            %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_no_input_code_err, NOQUOTE, %sysfunc(pathname(WORK))&EM_DSEP.RSUBMIT.sas));
+16251 +            %put &ERROR;
+16252 +            %put &EM_CODEBAR;
+16253 +            %goto quit;
+16254 +        %end;
+16256 +        ***********************************************************************;
+16257 +        *** CONVERT BINARY AND NOMINAL TARGETS TO CHAR VARIABLES  *************;
+16258 +        *** R PMML PACKAGE EXPORTS BINARY AND *********************************;
+16259 +        *** NOMINAL TARGETS AS CHAR VARIABLES *********************************;
+16260 +        *** FOR SUPERVISED TRAINING *******************************************;
+16261 +        ***********************************************************************;
+16263 +        %if ("&EM_PROPERTY_TRAINMODE"= "SUPERVISED" and (&_NUM_IMPORT_SETS)) %then %do;
+16265 +            *** GENERATE STATEMENTS FOR CHARACTER TARGETS;
+16266 +            *** GENERATE STATEMENTS TO TRUNCATE LONG TARGET VARIABLE NAMES;
+16267 +            *** GENERATE STATEMENTS TO TRUNCATE LONG TARGET LEVELS;
+16268 +            *** STORE IN FILE;
+16270 +            filename _targets "%sysfunc(pathname(work))&EM_DSEP.EM_R_TARGET_STMT.sas";
+16271 +            %put %EM_TARGET_LEVEL;                                          /* R PMML IS EXPORTING BINARY AND NOMINAL TARGETS AS CHARACTER VARS */
+16272 +            %if (("%sysfunc(compress(&EM_PROPERTY_R_OUTPUT))"= "PMML") and
+16273 +                ("%sysfunc(compress(%EM_TARGET_LEVEL))"= "BINARY" or "%sysfunc(compress(%EM_TARGET_LEVEL))"= "NOMINAL")) %then %do;
+16274 +                %CREATE_TARGET_TYPE_ARRAY;                                  /* CREATES A MACRO ARRAY WHERE THE NAME OF EACH TARGET RESOLVES TO ITS TYPE */
+16275 +                data _null_;
+16276 +                    file _targets;
+16277 +                    %do _j= 1 %to &EM_NUM_TARGET;
+16278 +                    %let _TARGETTYPE= %sysfunc(compress(%SCAN(%EM_TARGET, &_j)));
+16279 +                    put "length r%SUBSTR(%SCAN(%EM_TARGET, &_j), 1, 21) $20;";
+16280 +                        %if (%LENGTH(%SCAN(%EM_TARGET, &_j)) > 21) %then %do;
+16281 +                            %if ("&&&_TARGETTYPE"= "N") %then %do;          /* USING MACRO VAR FROM MACRO ARRAY CREATED DIRRECTLY ABOVE - DIFFERENT REASSIGNMENT AND TRUNCATION STATEMENTS ARE REQUIRED BY DIFFERENT TARGETS, TARGET LEVELS, AND TARGET
+16281!+TYPES */
+16282 +                                put "r%SUBSTR(%SCAN(%EM_TARGET, &_j), 1, 21)= left(trim(put(%SCAN(%EM_TARGET, &_j), best.)));";
+16283 +                            %end;
+16284 +                            %else %do;
+16285 +                                put "r%SUBSTR(%SCAN(%EM_TARGET, &_j), 1, 21)= left(%SCAN(%EM_TARGET, &_j));";
+16286 +                            %end;
+16287 +                        %end;
+16288 +                        %else %do;
+16289 +                            %if ("&&&_TARGETTYPE"= "N") %then %do;
+16290 +                                put "r%SCAN(%EM_TARGET, &_j)= left(trim(put(%SCAN(%EM_TARGET, &_j), best.)));";
+16291 +                            %end;
+16292 +                            %else %do;
+16293 +                                put "r%SCAN(%EM_TARGET, &_j)= left(%SCAN(%EM_TARGET, &_j));";
+16294 +                            %end;
+16295 +                        %end;
+16296 +                    %end;
+16297 +                run;
+16298 +            %end;
+16299 +            %else %do;
+16300 +                data _null_;
+16301 +                    file _targets;
+16302 +                    %do _j= 1 %to &EM_NUM_TARGET;
+16303 +                        %if (%LENGTH(%SCAN(%EM_TARGET, &_j)) > 21)
+16304 +                            %then %do;
+16305 +                            put "r%SUBSTR(%SCAN(%EM_TARGET, &_j), 1, 21)= %SCAN(%EM_TARGET, &_j);";
+16306 +                        %end;
+16307 +                        %else %do;
+16308 +                            put "r%SCAN(%EM_TARGET, &_j)= %SCAN(%EM_TARGET, &_j);";
+16309 +                        %end;
+16310 +                    %end;
+16311 +                run;
+16312 +            %end;
+16314 +            *** CONFIRM FILE I/O, RAISE EXCEPTION ON FAILURE;
+16315 +            %if ^%sysfunc(fexist(_targets)) %then %do;
+16316 +                %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_no_ctarget_reassignment_stmt, %sysfunc(pathname(work))&EM_DSEP.EM_R_TARGET_STMT.sas;
+16317 +                %put &EM_CODEBAR;
+16318 +                %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_no_ctarget_reassignment_stmt_err, NOQUOTE, %sysfunc(pathname(work))&EM_DSEP.EM_R_TARGET_STMT.sas));
+16319 +                %put &ERROR;
+16320 +                %put &EM_CODEBAR;
+16321 +                %goto quit;
+16322 +            %end;
+16324 +        %end;
+16326 +        ***********************************************************************;
+16327 +        *** CONVERT EM INPUT VEIWS TO SAS DATASETS ****************************;
+16328 +        ***********************************************************************;
+16330 +        %if (&_NUM_IMPORT_SETS) %then %do;                                  /* IF IMPORT DATA IS PRESENT, CONVERT IT TO VIEWS */
+16331 +            *** R DOES NOT ACCEPT SAS VIEWS;
+16332 +            %do _i= 1 %to &_NUM_IMPORT_SETS;
+16333 +                %EM_OPEN_R_CONVERT_VIEW_TO_TABLE(_targets, &&_ROLE&_i);
+16334 +            %end;
+16335 +            %if ("&EM_PROPERTY_TRAINMODE"= "SUPERVISED") %then %do;
+16336 +                filename _targets;
+16337 +            %end;
+16338 +        %end;
+16340 +        ***********************************************************************;
+16341 +        *** INVOKE PROC IML FOR R INTEGRATION *********************************;
+16342 +        ***********************************************************************;
+16344 +        %let SYSCC= 0;
+16345 +        proc iml;
+16347 +            %if (&_NUM_IMPORT_SETS) %then %do;                              /* IF IMPORT DATA AND METADATA IS PRESENT, SEND IT R THROUGH PROC IML */
+16349 +                *** EXPORT DATA FROM EM TO R;
+16350 +                *** 1ST ARG: DATA SET NAME;
+16351 +                *** 2ND ARG: R DATAFRAME NAME;
+16352 +                *** NODE EXPORT DATA CONTAINS R OBS ID;
+16353 +                %do _i= 1 %to &_NUM_IMPORT_SETS;
+16354 +                    %if ("%TRIM(&&_ROLE&_i)"= "TRAIN") %then %do;
+16355 +                        run ExportDataSetToR("EMR_IMPORT_DATA","EMR_IMPORT_DATA");
+16356 +                    %end;
+16357 +                    %else %do;
+16358 +                        run ExportDataSetToR("%TRIM(EMR_IMPORT_%sysfunc(upcase(&&_ROLE&_i)))","%TRIM(EMR_IMPORT_%sysfunc(upcase(&&_ROLE&_i)))");
+16359 +                    %end;
+16360 +                %end;
+16362 +                *******************************************************************;
+16363 +                *** INITIALIZE IML VARIABLES FOR R ENVIRONMEMT ********************;
+16364 +                *******************************************************************;
+16366 +                *** HANDLES FOR SAS VARIABLES IN R;
+16367 +                EMR_MODEL= 'EMR_MODEL';
+16369 +                EMR_NUM_INPUT= "%EM_R_NUMERIC_INPUT";
+16370 +                EMR_CLASS_INPUT= "%EM_R_FACTOR_INPUT";
+16371 +                EMR_CHAR_INPUT= "%EM_R_CHAR_INPUT";
+16373 +                %if ("&EM_PROPERTY_TRAINMODE"= "SUPERVISED") %then %do;
+16374 +                    EMR_NUM_TARGET= "&EM_R_NUMERIC_TARGET";
+16375 +                    EMR_CLASS_TARGET= "&EM_R_FACTOR_TARGET";
+16376 +                %end;
+16378 +                *** HANDLES FOR SAS INPUT DATA SETS IN R;
+16379 +                %do _j= 1 %to &_NUM_IMPORT_SETS;
+16380 +                    %if ("%TRIM(&&_ROLE&_j)"= "TRAIN") %then %do;
+16381 +                        EMR_IMPORT_DATA= "EMR_IMPORT_DATA";
+16382 +                    %end;
+16383 +                    %else %do;
+16384 +                        %TRIM(EMR_IMPORT_%sysfunc(upcase(&&_ROLE&_j)))= "%TRIM(EMR_IMPORT_%sysfunc(upcase(&&_ROLE&_j)))";
+16385 +                    %end;
+16386 +                %end;
+16388 +                *** HANDLES FOR SETS OF POST VARIABLES TO BE IMPORTED FROM R TO SAS;
+16389 +                %if ("&EM_PROPERTY_R_OUTPUT"^= "PMML") %then %do;
+16390 +                    %do _j= 1 %to &_NUM_IMPORT_SETS;
+16391 +                        %TRIM(EMR_EXPORT_%sysfunc(upcase(&&_ROLE&_j)))= "%TRIM(EMR_EXPORT_%sysfunc(upcase(&&_ROLE&_j)))";
+16392 +                    %end;
+16393 +                %end;
+16395 +            %end;
+16397 +            *** EXECUTE R STATEMENTS FROM USER;
+16398 +            %include _rsubmit /source2;
+16400 +            *******************************************************************;
+16401 +            *** TERMINATE PROC IML ********************************************;
+16402 +            *** CONDITIONALLY CREATE SCORED MODEL COLUMNS FROM R OUTPUT *******;
+16403 +            *******************************************************************;
+16405 +            %if ("&EM_PROPERTY_R_OUTPUT"= "PMML") %then %do;
+16407 +                quit;                                                       /* END PROC IML */
+16409 +                *** RAISE EXCEPTION ON PROC IML FAILURE;
+16410 +                %if %eval(&SYSCC > 4) %then %do;
+16411 +                    %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_R, &SYSCC;
+16412 +                    %put &EM_CODEBAR;
+16413 +                    %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_R_err, NOQUOTE, &SYSCC));
+16414 +                    %put &ERROR;
+16415 +                    %put &EM_CODEBAR;
+16416 +                    %goto quit;
+16417 +                %end;
+16419 +                ***************************************************************;
+16420 +                *** USE PROC PSCORE TO TRANSLATE PMML FROM R INTO SAS DATA STEP;
+16421 +                ***************************************************************;
+16423 +                *** LOOK FOR PMML FROM R;
+16424 +                *** MUST BE NAMED "emRPMML.xml" AND BE LOCATED IN WORK;
+16425 +                *** CONFIRM FILE I/O, RAISE EXCEPTION ON FAILURE;
+16426 +                %if ^%sysfunc(fileexist(%sysfunc(pathname(WORK))&EM_DSEP.emRPMML.xml)) %then %do;
+16427 +                    %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_pmml, %sysfunc(pathname(WORK))&EM_DSEP.emRPMML.xml;
+16428 +                    %put &EM_CODEBAR;
+16429 +                    %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_pmml_err, NOQUOTE, %sysfunc(pathname(WORK))&EM_DSEP.emRPMML.xml));
+16430 +                    %put &ERROR;
+16431 +                    %put &EM_CODEBAR;
+16432 +                    %goto quit;
+16433 +                %end;
+16435 +                *** INVOKE PROC PSCORE;
+16436 +                %let EM_R_PMML_FILE= %sysfunc(pathname(WORK))&EM_DSEP.emRPMML.xml;
+16437 +                %let EM_R_DS_SCORE_CODE_FILE= %sysfunc(pathname(WORK))&EM_DSEP.EM_R_PSCORE.sas;
+16438 +                %let SYSCC= 0;
+16439 +                proc pscore
+16440 +                    pmml file="&EM_R_PMML_FILE"
+16441 +                    ds file="&EM_R_DS_SCORE_CODE_FILE";
+16442 +                run;
+16444 +                *** RAISE EXCEPTION ON PROC PSCORE FAILURE;
+16445 +                %if (&SYSCC) %then %do;
+16446 +                    %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_pscore, &SYSCC;
+16447 +                    %put &EM_CODEBAR;
+16448 +                    %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_pscore_err, NOQUOTE, &SYSCC));
+16449 +                    %put &ERROR;
+16450 +                    %put &EM_CODEBAR;
+16451 +                    %goto quit;
+16452 +                %end;
+16454 +                *** CHECK FOR CREATION OF SCORE CODE, RAISE EXCEPTION ON FAILURE;
+16455 +                %if ^%sysfunc(fileexist(&EM_R_DS_SCORE_CODE_FILE)) %then %do;
+16456 +                    %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_no_ds_score_code, &EM_R_DS_SCORE_CODE_FILE;
+16457 +                    %put &EM_CODEBAR;
+16458 +                    %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_no_ds_score_code_err, NOQUOTE, &EM_R_DS_SCORE_CODE_FILE));
+16459 +                    %put &ERROR;
+16460 +                    %put &EM_CODEBAR;
+16461 +                    %goto quit;
+16462 +                %end;
+16464 +                *** CHECK FOR VARIABLES WITH NUMERIC NAMES IN SCORE CODE;
+16465 +                *** WORK AROUND FOR nnet;
+16466 +                filename _scrcd "&EM_R_DS_SCORE_CODE_FILE";
+16467 +                %let _VVNANY= 0;
+16468 +                data _null_;
+16469 +                    length _filein 8 _rec $2000;
+16470 +                    _filein= fopen('_scrcd', 'I');
+16471 +                    do while(fread(_filein)= 0);
+16472 +                        _rc= fget(_filein, _rec, 2000);
+16473 +                        _rc= prxmatch('/"([0-9])*"n/', _rec);
+16474 +                        if _rc then do;
+16475 +                            call symput('_VVNANY', put(1,1.));
+16476 +                            goto exit;
+16477 +                        end;
+16478 +                    end;
+16479 +                    exit: stop;
+16480 +                run;
+16482 +                *** IF NUMERIC VARIABLE NAMES ARE DETECTED, RENAME THEM;
+16483 +                %if (&_VVNANY) %then %do;
+16485 +                    %let EM_R_DS_SCORE_CODE_FILE_VVNANY= %sysfunc(pathname(WORK))&EM_DSEP.EM_R_PSCORE_VVNANY.sas;
+16486 +                    filename _out "&EM_R_DS_SCORE_CODE_FILE_VVNANY";
+16488 +                    data _null_;
+16489 +                        length _filein 8 _fileout 8 _rec $2000;
+16490 +                        _filein= fopen('_scrcd', 'I');
+16491 +                        _fileout= fopen('_out', 'O');
+16492 +                        do while(fread(_filein)= 0);
+16493 +                            _rc= fget(_filein, _rec, 2000);
+16494 +                            _rec= prxchange('s/"([0-9]*)"n/"_$1"n/', -1, _rec);
+16495 +                            _rc= fput(_fileout, _rec);
+16496 +                            _rc= fwrite(_fileout);
+16497 +                        end;
+16498 +                        _rc= fclose(_filein);
+16499 +                        _rc= fclose(_fileout);
+16500 +                    run;
+16502 +                    filename _out;
+16503 +                    filename _scrcd "&EM_R_DS_SCORE_CODE_FILE_VVNANY";
+16505 +                %end;
+16507 +                ***************************************************************;
+16508 +                *** RENAME VARIABLES IN PMML TO NAMES THAT EM EXPECTS *********;
+16509 +                ***************************************************************;
+16511 +                *** CREATE RENAME STATEMENT IN FILE;
+16512 +                %EM_OPEN_R_P_RENAME_STMT(prnmpmml);
+16514 +                *** CONFIRM CREATION OF RENAME STATEMENT FILE, RAISE EXCEPTION ON FAILURE;
+16515 +                %if ^%sysfunc(fexist(prnmpmml)) %then %do;
+16516 +                    %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_no_target_assignment_stmt, %sysfunc(pathname(prnmpmml));
+16517 +                    %put &EM_CODEBAR;
+16518 +                    %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_no_target_assignment_stmt_err, NOQUOTE, %sysfunc(pathname(prnmpmml))));
+16519 +                    %put &ERROR;
+16520 +                    %put &EM_CODEBAR;
+16521 +                    %goto quit;
+16522 +                %end;
+16524 +                *** APPEND NECESSARY STATEMENTS TO PSCORE SCORE CODE;
+16525 +                data _null_;
+16526 +                    file _scrcd mod lrecl=20000 ls=20000;
+16527 +                    %include prnmpmml /source2;
+16528 +                run;
+16530 +                filename prnmpmml;
+16532 +                ***************************************************************;
+16533 +                *** COPY SCORE CODE INTO NODE DIR *****************************;
+16534 +                ***************************************************************;
+16536 +                *** COPY DS_FILE INTO NODE DIRECTORY AS SCORE CODE;
+16537 +                filename _out "&EM_FILE_EMFLOWSCORECODE";
+16538 +                %EM_COPYFILE(infref=_scrcd, outfref=_out);
+16539 +                filename _out;
+16541 +                *** CONFIRM FILE I/O, RAISE EXCEPTION ON FAILURE;
+16542 +                %if ^%sysfunc(fileexist(&EM_FILE_EMFLOWSCORECODE)) %then %do;
+16543 +                    %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_no_flow_score, &EM_FILE_EMFLOWSCORECODE;
+16544 +                    %put &EM_CODEBAR;
+16545 +                    %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_no_flow_score_err, NOQUOTE, &EM_FILE_EMFLOWSCORECODE));
+16546 +                    %put &ERROR;
+16547 +                    %put &EM_CODEBAR;
+16548 +                    %goto quit;
+16549 +                %end;
+16551 +                filename _out "&EM_FILE_EMPUBLISHSCORECODE";
+16552 +                %EM_COPYFILE(infref=_scrcd, outfref=_out);
+16553 +                filename _scrcd;
+16554 +                filename _out;
+16556 +                *** CONFIRM FILE I/O, RAISE EXCEPTION ON FAILURE;
+16557 +                %if ^%sysfunc(fileexist(&EM_FILE_EMPUBLISHSCORECODE)) %then %do;
+16558 +                    %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_no_publish_score, &EM_FILE_EMPUBLISHSCORECODE;
+16559 +                    %put &EM_CODEBAR;
+16560 +                    %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_no_publish_score_err, NOQUOTE, &EM_FILE_EMPUBLISHSCORECODE));
+16561 +                    %put &ERROR;
+16562 +                    %put &EM_CODEBAR;
+16563 +                    %goto quit;
+16564 +                %end;
+16566 +                *** COPY PMML FROM R INTO NODE DIRECTORY;
+16567 +                filename _in  "&EM_R_PMML_FILE";
+16568 +                filename _out "&EM_NODEDIR.&EM_DSEP.RPMML.xml";
+16569 +                %EM_COPYFILE(infref=_in, outfref=_out);
+16570 +                filename _in;
+16571 +                filename _out;
+16573 +                *** CONFIRM FILE I/O, RAISE WARN ON FAILURE;
+16574 +                %if ^%sysfunc(fileexist(&EM_NODEDIR.&EM_DSEP.RPMML.xml)) %then %do;
+16575 +                    %put &EM_CODEBAR;
+16576 +                    %let WARNING= %sysfunc(sasmsg(sashelp.dmine, opensource_no_RPMML_warn, NOQUOTE));
+16577 +                    %put &WARNING;
+16578 +                    %put &EM_CODEBAR;
+16579 +                    %goto quit;
+16580 +                %end;
+16582 +                ***************************************************************;
+16583 +                *** IMPORT R RESULTS INTO EM FLOW *****************************;
+16584 +                ***************************************************************;
+16586 +                %if ("&EM_PROPERTY_TRAINMODE"= "SUPERVISED") %then %do;     /* SUPERVISED TRAINING */
+16588 +                    *** EXECUTE %EM MODEL *************************************;
+16589 +                    %EM_MODEL(
+16590 +                        TARGET= %EM_TARGET,
+16591 +                        ASSESS= Y,
+16592 +                        CLASSIFICATION= Y,
+16593 +                        DECSCORECODE= N,
+16594 +                        FITSTATISTICS= Y,
+16595 +                        RESIDUALS= Y
+16596 +                    );
+16598 +                %end;
+16599 +                %else %do;                                                  /* UNSUPERVISED TRAINING */
+16601 +                    *** MANUALLY EXECUTE UNSUPERVISED SCORE CODE TO CREATE EXPORT DATA;
+16602 +                    %do _i= 1 %to &_NUM_IMPORT_SETS;
+16603 +                        %let _ROLEi= &&_ROLE&_i;
+16604 +                        data &&EM_EXPORT_&_ROLEi;
+16605 +                            %if ("%TRIM(&_ROLEi)"= "TRAIN") %then %do;
+16606 +                                set &EM_IMPORT_DATA.;
+16607 +                            %end;
+16608 +                            %else %do;
+16609 +                                set &&EM_IMPORT_&_ROLEi.;
+16610 +                            %end;
+16611 +                            %include "&EM_FILE_EMFLOWSCORECODE" /source2;
+16612 +                        run;
+16613 +                    %end;
+16615 +                    *** ADJUST METADATA ROLES;
+16616 +                    filename _change catalog 'SASHELP.EMUTIL.EM_METACHANGE.SOURCE';
+16617 +                    %include _change;
+16618 +                    filename _change;
+16620 +                    %EM_METACHANGE(
+16621 +                        NAME= _SEGMENT_,
+16622 +                        ROLE= SEGMENT,
+16623 +                        COMMENT= %nrbquote(CREATED BY THE R LANGUAGE FOR STATISTICAL ANALYSIS)
+16624 +                    );
+16626 +                %end;
+16628 +        %end;                                                               /* END PMML EXPORT */
+16629 +        %else %if ("&EM_PROPERTY_R_OUTPUT"= "MERGE") %then %do;
+16631 +                ***************************************************************;
+16632 +                *** IMPORT SETS OF POST VARIABLES FROM R **********************;
+16633 +                ***************************************************************;
+16635 +                *** DETERMINE WHICH POST SETS CAN BE EXPORTED FROM R;
+16636 +                *** USERS MAY NOT HAVE DEFINED ALL IMPORTED ROLES IN R OR DOING SO MAY CAUSE ERRORS:
+16637 +                *** CONVERT ARRAY CONTAINING ROLE INDICES INTO MACRO VARIABLE;
+16638 +                *** MACRO VARIABLE IS THEN USED AS LOOP INDEX FOR IMPORTING POST SETS;
+16639 +                run ImportMatrixFromR(EM_R_EXPORT_SETS,'emRExportSet');
+16640 +                EM_R_EXPORT_SETS= shape(EM_R_EXPORT_SETS, 1, nrow(EM_R_EXPORT_SETS));
+16641 +                EM_R_EXPORT_SETS= char(EM_R_EXPORT_SETS);
+16642 +                call symput('_EM_R_EXPORT_SETS', left(compbl(rowcat(EM_R_EXPORT_SETS))));
+16644 +                %do _i= 1 %to %sysfunc(countw(&_EM_R_EXPORT_SETS));
+16645 +                    %let _j= %scan(&_EM_R_EXPORT_SETS, &_i);
+16646 +                    run ImportDataSetFromR("%TRIM(EMR_EXPORT_&&_ROLE&_j)","%TRIM(EMR_EXPORT_%sysfunc(upcase(&&_ROLE&_j)))");
+16647 +                %end;
+16649 +                quit;                                                       /* END PROC IML */
+16651 +                *** RAISE EXCEPTION ON PROC IML FAILURE;
+16652 +                %if %eval(&SYSCC > 4) %then %do;
+16653 +                    %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_R, &SYSCC;
+16654 +                    %put &EM_CODEBAR;
+16655 +                    %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_R_err, NOQUOTE, &SYSCC));
+16656 +                    %put &ERROR;
+16657 +                    %put &EM_CODEBAR;
+16658 +                    %goto quit;
+16659 +                %end;
+16661 +                ***************************************************************;
+16662 +                *** MERGE POST SETS FROM R ONTO NODE EXPORT SETS **************;
+16663 +                ***************************************************************;
+16665 +                *** RAISE EXCEPTION FOR NO TRAINING, WARN FOR OTHER ROLES;
+16666 +                %do _i= 1 %to &_NUM_IMPORT_SETS;
+16668 +                    %let _ROLEi= &&_ROLE&_i;
+16670 +                    *** CHECK FOR TABLE OF POST VARIABLES EXPORTED FROM R, RAISE EXCEPTION ON TRAIN FAILURE;
+16671 +                    *** WARN FOR OTHER ROLES;
+16672 +                    %if ^%EM_OPEN_SET_EXISTS(EMR_EXPORT_&_ROLEi) %then %do;
+16673 +                        %if ("%TRIM(&_ROLEi)"= "TRAIN") %then %do;
+16674 +                            %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_no_merge_train_table, EMR_EXPORT_&_ROLEi;
+16675 +                            %put &EM_CODEBAR;
+16676 +                            %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_no_merge_train_table_err, NOQUOTE, EMR_EXPORT_&_ROLEi));
+16677 +                            %put &ERROR;
+16678 +                            %put &EM_CODEBAR;
+16679 +                            %goto quit;
+16680 +                        %end;
+16681 +                        %else %do;
+16682 +                            %put &EM_CODEBAR;
+16683 +                            %let WARNING= %sysfunc(sasmsg(sashelp.dmine, opensource_no_merge_table_warn, NOQUOTE, EMR_EXPORT_&_ROLEi));
+16684 +                            %put &WARNING;
+16685 +                            %put &EM_CODEBAR;
+16686 +                            %goto continue;
+16687 +                        %end;
+16688 +                    %end;
+16690 +                    ***********************************************************;
+16691 +                    *** CHECK FOR MATCHING NUMBER OF OBS **********************;
+16692 +                    *** BEWTEEN EM IMPORTS AND R POST SETS ********************;
+16693 +                    ***********************************************************;
+16695 +                    *** GET NUMBER OF OBS FROM POST SETS;
+16696 +                    %let _DSID=%sysfunc(open(EMR_EXPORT_&_ROLEi));             /* ALWAYS A DATASET, NOT A VIEW */
+16697 +                    %if (&_DSID) %then %do;
+16698 +                        %let _PNOBS= %sysfunc(attrn(&_DSID, NLOBS));
+16699 +                        %let _rc= %sysfunc(close(&_DSID));
+16700 +                    %end;
+16701 +                    %else %do;
+16702 +                        %let EMEXCEPTIONSTRING=exception.server.IO.OPEN, EMR_EXPORT_&_ROLEi;
+16703 +                        %put &EM_CODEBAR;
+16704 +                        %put %sysfunc(sasmsg(sashelp.dmine, IO.OPEN_ERR, NOQUOTE, EMR_EXPORT_&_ROLEi));
+16705 +                        %put &EM_CODEBAR;
+16706 +                        %goto quit;
+16707 +                    %end;
+16709 +                    *** GET NUMBER OF OBS FROM INPUT DATA SETS;
+16710 +                    %let _DSID= 0;
+16711 +                    %if ("%TRIM(&_ROLEi)"= "TRAIN") %then %do;
+16712 +                        %let _DSID=%sysfunc(open(&EM_IMPORT_DATA));
+16713 +                    %end;
+16714 +                    %else %do;
+16715 +                        %let _DSID=%sysfunc(open(&&EM_IMPORT_&_ROLEi));
+16716 +                    %end;
+16717 +                    %if (&_DSID) %then %do;
+16718 +                        %let _NOBS= %sysfunc(attrn(&_DSID, NLOBS));
+16719 +                        %let _rc= %sysfunc(close(&_DSID));
+16720 +                        %if %eval(&_NOBS < 0) %then %do;
+16721 +                            proc sql noprint;
+16722 +                                select count(*) into: _NOBS
+16723 +                                from
+16724 +                                %if ("%TRIM(&_ROLEi)"= "TRAIN") %then %do;
+16725 +                                    &EM_IMPORT_DATA
+16726 +                                %end;
+16727 +                                %else %do;
+16728 +                                    &&EM_IMPORT_&_ROLEi
+16729 +                                %end;
+16730 +                                ;
+16731 +                            quit;
+16732 +                        %end;
+16733 +                    %end;
+16734 +                    %else %do;
+16735 +                        %if ("%TRIM(&_ROLEi)"= "TRAIN") %then %do;
+16736 +                            %let EMEXCEPTIONSTRING=exception.server.IO.OPEN, &EM_IMPORT_DATA;
+16737 +                        %end;
+16738 +                        %else %do;
+16739 +                            %let EMEXCEPTIONSTRING=exception.server.IO.OPEN, &&EM_IMPORT_&_ROLEi;
+16740 +                        %end;
+16741 +                        %put &EM_CODEBAR;
+16742 +                            %if ("%TRIM(&_ROLEi)"= "TRAIN") %then %do;
+16743 +                                %put %sysfunc(sasmsg(sashelp.dmine, IO.OPEN_ERR, NOQUOTE, &EM_IMPORT_DATA));
+16744 +                            %end;
+16745 +                            %else %do;
+16746 +                                %put %sysfunc(sasmsg(sashelp.dmine, IO.OPEN_ERR, NOQUOTE, &&EM_IMPORT_&_ROLEi));
+16747 +                            %end;
+16748 +                        %put &EM_CODEBAR;
+16749 +                        %goto quit;
+16750 +                    %end;
+16752 +                    *** EXECUTE CHECK;
+16753 +                    %if %eval("%TRIM(&_NOBS)"^= "%TRIM(&_PNOBS)") %then %do;
+16754 +                        %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_merge;
+16755 +                        %put &EM_CODEBAR;
+16756 +                        %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_merge_err, NOQUOTE));
+16757 +                        %put &ERROR;
+16758 +                        %put &EM_CODEBAR;
+16759 +                        %goto quit;
+16760 +                    %end;
+16762 +                    ***********************************************************;
+16763 +                    *** RENAME R POST VARS ************************************;
+16764 +                    *** R NAMES ARE UNPREDICTABLE AND CAN CAUSE PROBLEMS ******;
+16765 +                    ***********************************************************;
+16767 +                    %let SYSCC= 0;
+16768 +                    proc contents
+16769 +                        data= EMR_EXPORT_&_ROLEi                     /* ALREADY KNOW SET EXISTS */
+16770 +                        out= _pnames (keep= NAME)
+16771 +                        noprint;
+16772 +                    run;
+16774 +                    *** RAISE EXCEPTION ON PROC CONTENTS FAILURE;
+16775 +                    %if (&SYSCC) %then %do;
+16776 +                        %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_R_var_rename, &SYSCC;
+16777 +                        %put &EM_CODEBAR;
+16778 +                        %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_R_var_rename_err, NOQUOTE, &SYSCC));
+16779 +                        %put &ERROR;
+16780 +                        %put &EM_CODEBAR;
+16781 +                        %goto quit;
+16782 +                    %end;
+16784 +                    %EM_OPEN_VARMACRO(
+16785 +                        _NAME= EM_R_MERGE_VAR,
+16786 +                        _METADATA= _pnames,
+16787 +                        _NUMMACRO= EM_NUM_R_MERGE_VAR
+16788 +                    );
+16790 +                    %let SYSCC= 0;
+16791 +                    proc datasets lib= work nolist nowarn noprint;
+16792 +                        modify EMR_EXPORT_&_ROLEi;
+16793 +                        %do _j= 1 %to &EM_NUM_R_MERGE_VAR;
+16794 +                            rename %scan(%EM_R_MERGE_VAR, &_j)= EMR_VAR&_j.;
+16795 +                        %end;
+16796 +                    run;
+16798 +                    *** RAISE EXCEPTION ON PROC DATASETS FAILURE;
+16799 +                    %if (&SYSCC) %then %do;
+16800 +                        %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_R_var_rename, &SYSCC;
+16801 +                        %put &EM_CODEBAR;
+16802 +                        %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_R_var_rename_err, NOQUOTE, &SYSCC));
+16803 +                        %put &ERROR;
+16804 +                        %put &EM_CODEBAR;
+16805 +                        %goto quit;
+16806 +                    %end;
+16808 +                    ***********************************************************;
+16809 +                    *** EXECUTE MERGE *****************************************;
+16810 +                    ***********************************************************;
+16812 +                    %if (%EM_OPEN_SET_EXISTS(EMR_EXPORT_&_ROLEi)) %then %do;
+16813 +                        data &&EM_EXPORT_&_ROLEi;
+16814 +                        %if ("%TRIM(&_ROLEi)"= "TRAIN") %then %do;
+16815 +                            merge &EM_IMPORT_DATA EMR_EXPORT_&_ROLEi;
+16816 +                        %end;
+16817 +                        %else %do;
+16818 +                            merge &&EM_IMPORT_&_ROLEi EMR_EXPORT_&_ROLEi;
+16819 +                        %end;
+16820 +                        run;
+16821 +                    %end;
+16823 +                    %continue:
+16825 +                %end;                                                       /* END R POST VARIABLE EXPORT LOOP */
+16827 +                ***************************************************************;
+16828 +                *** CHANGE ROLE OF CREATED VARS *******************************;
+16829 +                ***************************************************************;
+16831 +                filename _change catalog 'SASHELP.EMUTIL.EM_METACHANGE.SOURCE';
+16832 +                %include _change;
+16833 +                filename _change;
+16835 +                %let _VAR_ROLE= PREDICT;
+16836 +                %if ("&EM_PROPERTY_TRAINMODE"= "UNSUPERVISED") %then %let _VAR_ROLE= INPUT;
+16838 +                %do _i= 1 %to &EM_NUM_R_MERGE_VAR;
+16839 +                    %EM_METACHANGE(
+16840 +                        NAME= EMR_VAR&_i,
+16841 +                        ROLE= &_VAR_ROLE,
+16842 +                        COMMENT= %nrbquote(CREATED BY THE R LANGUAGE FOR STATISTICAL ANALYSIS)
+16843 +                    );
+16844 +                %end;
+16846 +                %if (%sysfunc(exist(_pnames))) %then %do;
+16847 +                    proc datasets lib= work nolist nowarn noprint;
+16848 +                        delete _pnames;
+16849 +                    run;
+16850 +                %end;
+16852 +        %end;                                                               /* END MERGE EXPORT */
+16853 +        %else %do;
+16855 +                quit;                                                       /* END PROC IML */
+16857 +                *** RAISE EXCEPTION ON PROC IML FAILURE;
+16858 +                %if %eval(&SYSCC > 4) %then %do;
+16859 +                    %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_R, &SYSCC;
+16860 +                    %put &EM_CODEBAR;
+16861 +                    %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_R_err, NOQUOTE, &SYSCC));
+16862 +                    %put &ERROR;
+16863 +                    %put &EM_CODEBAR;
+16864 +                    %goto quit;
+16865 +                %end;
+16867 +        %end;                                                               /* END NONE */
+16869 +        ***********************************************************************;
+16870 +        *** COPY ADDITIONAL FILES OF INTEREST OUT OF WORK INTO NODE DIR *******;
+16871 +        ***********************************************************************;
+16873 +            *******************************************************************;
+16874 +            *** USER R CODE ***************************************************;
+16875 +            *******************************************************************;
+16877 +            filename _out "&EM_NODEDIR.&EM_DSEP.RSUBMIT.sas";
+16878 +            %EM_COPYFILE(
+16879 +                infref= _rsubmit,
+16880 +                outfref= _out,
+16881 +                append= N
+16882 +            );
+16883 +            filename _rsubmit;
+16884 +            filename _out;
+16886 +            *******************************************************************;
+16887 +            *** IMAGE FILES ***************************************************;
+16888 +            *** CSV FILES *****************************************************;
+16889 +            *******************************************************************;
+16891 +            *** CREATE DATA SET TO CONTAIN FILE NAMES IN WORK;
+16892 +            *** CREATE METADATA SET OF OUTPUT FILE NAMES IN WORK;
+16893 +            filename _workdir "%sysfunc(pathname(WORK))";
+16894 +            data _csvdirlist _picdirlist;
+16895 +                length name $256;
+16896 +                _did= dopen('_workdir');
+16897 +                if _did then _memcount= dnum(_did);
+16898 +                if _memcount > 0 then do;
+16899 +                    do _i= 1 to _memcount;
+16900 +                        name= dread(_did, _i);
+16901 +                        if upcase(scan(name, -1, '.')) in ('CSV','TXT') then output _csvdirlist;
+16902 +                        else if upcase(scan(name, -1, '.')) in ('JPEG','JPG','GIF','PNG') then output _picdirlist;
+16903 +                    end;
+16904 +                end;
+16905 +                drop _did _memcount _i;
+16906 +                _did= dclose(_did);
+16907 +            run;
+16908 +            filename _workdir;
+16910 +            *** CHECK IF PICTURES WERE FOUND, CONTIUNE IF NOT;
+16911 +            %let _PICS_EXIST= 1;
+16912 +            %let _DSID= %sysfunc(open(_picdirlist));
+16913 +            %let _rc= %sysfunc(attrn(&_DSID, NLOBS));
+16914 +            %if ^(&_rc) %then %do;
+16915 +                    %put &EM_CODEBAR;
+16916 +                    %let NOTE= %sysfunc(sasmsg(sashelp.dmine, opensource_no_pics_note, NOQUOTE));
+16917 +                    %put &NOTE;
+16918 +                    %put &EM_CODEBAR;
+16919 +                    %let _PICS_EXIST= 0;
+16920 +                    %let _rc= %sysfunc(close(&_DSID));
+16921 +            %end;
+16922 +            %let _rc= %sysfunc(close(&_DSID));
+16924 +            %if (&_PICS_EXIST) %then %do;
+16926 +                *** CREATE MACRO LIST OF PICTURE FILE NAMES IN WORK;
+16927 +                %EM_OPEN_VARMACRO(
+16928 +                    _NAME= EM_R_PIC,
+16929 +                    _METADATA= _picdirlist,
+16930 +                    _KEY= NAME,
+16931 +                    _NUMMACRO= EM_NUM_R_PIC
+16932 +                );
+16934 +                *** CONDITIONALLY CREATE NODE GRAPH DIR;
+16935 +                %let _DIRREF= _dirref;
+16936 +                %let _rc= %sysfunc(filename(_DIRREF,&EM_NODEDIR.&EM_DSEP.GRAPH));
+16937 +                %if ^%sysfunc(fexist(&_DIRREF)) %then %do;
+16938 +                    data _null_;
+16939 +                        _dir= dcreate(GRAPH, "&EM_NODEDIR");
+16940 +                        call symput('_DIRRC', trim(_dir));
+16941 +                    run;
+16942 +                %end;
+16943 +                %if (%symexist(_DIRRC)) %then %do;
+16944 +                    %if ("&_DIRRC"= "")%then %do;
+16945 +                        %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_no_graph_dir, &EM_NODEDIR.&EM_DSEP.GRAPH;
+16946 +                        %put &EM_CODEBAR;
+16947 +                        %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_no_graph_dir_err, NOQUOTE, &EM_NODEDIR.&EM_DSEP.GRAPH));
+16948 +                        %put &ERROR;
+16949 +                        %put &EM_CODEBAR;
+16950 +                        filename &_DIRREF;
+16951 +                        %goto quit;
+16952 +                    %end;
+16953 +                %end;
+16955 +                filename &_DIRREF;
+16957 +                *** BINARY COPY PICTURE FILES FROM WORK TO NODE DIR;
+16958 +                *** WARNING TO LOG ON FAILURE;
+16959 +                %do _i=1 %to &EM_NUM_R_PIC;
+16960 +                    %let _FILENAME= %SCAN(%EM_R_PIC, &_i, , S);
+16961 +                    %let _INFILE= %sysfunc(pathname(WORK))&EM_DSEP.&_FILENAME;
+16962 +                    %let _OUTFILE= &EM_NODEDIR.&EM_DSEP.GRAPH&EM_DSEP.&_FILENAME;
+16963 +                    %EM_OPEN_BINARY_COPY(%nrbquote(&_INFILE), %nrbquote(&_OUTFILE));
+16964 +                    %if (^%sysfunc(fileexist(%nrbquote(&_OUTFILE)))) %then %do;
+16965 +                        %put &EM_CODEBAR;
+16966 +                        %let WARNING= %sysfunc(sasmsg(sashelp.dmine, opensource_copy_warn, NOQUOTE, %nrbquote(&_INFILE), %nrbquote(&_OUTFILE)));
+16967 +                        %put &WARNING;
+16968 +                        %put &EM_CODEBAR;
+16969 +                    %end;
+16970 +                %end;
+16972 +                proc datasets lib= WORK noprint nolist nowarn;
+16973 +                    delete _picdirlist;
+16974 +                run;
+16976 +            %end;                                                           /* END PIC OUTPUT */
+16978 +            *** CHECK IF CSV OR TXT FILES WERE FOUND, EXIT IF NOT;
+16979 +            %let _CSVS_EXIST= 1;
+16980 +            %let _DSID= %sysfunc(open(_csvdirlist));
+16981 +            %let _rc= %sysfunc(attrn(&_DSID, NLOBS));
+16982 +            %if ^(&_rc) %then %do;
+16983 +                    %put &EM_CODEBAR;
+16984 +                    %let NOTE= %sysfunc(sasmsg(sashelp.dmine, opensource_no_text_note, NOQUOTE));
+16985 +                    %put &NOTE;
+16986 +                    %put &EM_CODEBAR;
+16987 +                    %let _CSVS_EXIST= 0;
+16988 +                    %let _rc= %sysfunc(close(&_DSID));
+16989 +            %end;
+16990 +            %let _rc= %sysfunc(close(&_DSID));
+16992 +            %if (&_CSVS_EXIST) %then %do;
+16994 +                *** CREATE MACRO LIST OF CSV AND/OR TXT FILE NAMES IN WORK;
+16995 +                %EM_OPEN_VARMACRO(
+16996 +                    _NAME= EM_R_CSV,
+16997 +                    _METADATA= _csvdirlist,
+16998 +                    _KEY= NAME,
+16999 +                    _NUMMACRO= EM_NUM_R_CSV
+17000 +                );
+17002 +                *** COPY CSV AND/OR TXT FILES FROM WORK TO NODE DIR;
+17003 +                *** WARNING TO LOG ON FAILURE;
+17004 +                %do _i=1 %to &EM_NUM_R_CSV;
+17005 +                    %let _FILENAME= %SCAN(%EM_R_CSV, &_i, , S);
+17006 +                    %let _INFILE= %sysfunc(pathname(WORK))&EM_DSEP.&_FILENAME;
+17007 +                    %let _OUTFILE= &EM_NODEDIR.&EM_DSEP.&_FILENAME;
+17008 +                    filename _csvin "&_INFILE";
+17009 +                    filename _csvout "&_OUTFILE";
+17010 +                    %EM_COPYFILE(
+17011 +                        infref= _csvin,
+17012 +                        outfref= _csvout,
+17013 +                        append= N
+17014 +                    );
+17015 +                    filename _csvin;
+17016 +                    filename _csvout;
+17017 +                    %if (^%sysfunc(fileexist(%nrbquote(&_OUTFILE)))) %then %do;
+17018 +                        %put &EM_CODEBAR;
+17019 +                        %let WARNING= %sysfunc(sasmsg(sashelp.dmine, opensource_copy_warn, NOQUOTE, %nrbquote(&_INFILE), %nrbquote(&_OUTFILE)));
+17020 +                        %put &WARNING;
+17021 +                        %put &EM_CODEBAR;
+17022 +                    %end;
+17023 +                %end;
+17025 +                proc datasets lib= WORK noprint nolist nowarn;
+17026 +                    delete _csvdirlist;
+17027 +                run;
+17029 +            %end;                                                           /* END CSV/TXT OUTPUT */
+17031 +    %end;                                                                   /* END R TRAINING */
+17033 +    %quit:
+17035 +%mend EM_OPEN_TRAIN;
+NOTE: %INCLUDE (level 1) ending.
+NOTE: Fileref _TRAIN has been deassigned.
+ 
+NOTE: The file _RCHECK is:
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\RCHECK.sas,
+      RECFM=V,LRECL=131068,File Size (bytes)=0,
+      Last Modified=13Feb2019:17:03:47,
+      Create Time=13Feb2019:17:03:47
+ 
+NOTE: 2 records were written to the file _RCHECK.
+      The minimum record length was 10.
+      The maximum record length was 10.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+NOTE: IML Ready
+NOTE: %INCLUDE (level 1) file _RCHECK is file C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\RCHECK.sas.
+17036 +submit /R;
+17037 +endsubmit;
+NOTE: %INCLUDE (level 1) ending.
+NOTE: Exiting IML.
+NOTE: PROCEDURE IML used (Total process time):
+      real time           0.19 seconds
+      cpu time            0.01 seconds
+ 
+ 
+NOTE: Fileref _RCHECK has been deassigned.
+NOTE: %INCLUDE (level 1) file _OSUTIL is file SASHELP.EMUTIL.EM_OPEN_MACROS.SOURCE.
+17039 +*******************************************************************************;
+17040 +*** UTILITY MACROS FOR EM OPEN SOURCE INTEGRATIION EXTENSION NODE *************;
+17041 +*******************************************************************************;
+17043 +*******************************************************************************;
+17044 +*** CHECKS IF A SET OR VIEW EXISTS ********************************************;
+17045 +*******************************************************************************;
+17047 +*** CALLED BY EM_OPEN_TRAIN;
+17048 +%macro EM_OPEN_SET_EXISTS(_DATASET);
+17050 +    %if (%sysfunc(exist(&_DATASET)) or
+17051 +        %sysfunc(exist(&_DATASET, VIEW))) and
+17052 +        "&_DATASET" ne "" %then %do;
+17053 +            %let _rc=1;
+17054 +    %end;
+17055 +    %else %do;
+17056 +            %let _rc=0;
+17057 +    %end;
+17059 +    &_rc.
+17061 +%mend EM_OPEN_SET_EXISTS;
+17063 +*******************************************************************************;
+17064 +*** REGISTERS SETS INTO MACRO VARIABLE ARRAY **********************************;
+17065 +*******************************************************************************;
+17067 +*** CALLED BY EM_OPEN_TRAIN;
+17068 +%macro EM_OPEN_REGISTER(_DATASET, _ROLE, _i);
+17070 +    _set="&_DATASET";
+17071 +    _role="&_ROLE";
+17072 +    _set_index=cats('_DATASET', strip(put(&_i,1.)));
+17073 +    _role_index=cats('_ROLE', strip(put(&_i,1.)));
+17074 +    call symput(_set_index, _set);
+17075 +    call symput(_role_index, _role);
+17077 +%mend EM_OPEN_REGISTER;
+17079 +*******************************************************************************;
+17080 +*** WRITES A MACRO INTO A TEMPORARY CATALOG ***********************************;
+17081 +*** RESOLVES TO A LIST OF VARIABLES *******************************************;
+17082 +*******************************************************************************;
+17084 +*** ALSO DECLARES A GLOBAL VARIABLE FOR THE NUMBER IN THE LIST;
+17085 +*** CALLED BY EM_OPEN_TRAIN;
+17086 +*** ADAPTED FROM EM_VAR_MACRO;
+17087 +%macro EM_OPEN_VARMACRO(_NAME=, _METADATA=, _WHERE=, _DELIM=, _PREFIX=, _KEY= NAME, _NUMMACRO=);
+17089 +   filename macFile catalog 'work.emutil.macro.source';
+17090 +   %let _METAOBS= 0;
+17092 +   %if ^(%EM_OPEN_SET_EXISTS(&_METADATA))%then %do;
+17093 +       %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_macro, EM_OPEN_VARMACRO, &_METADATA;
+17094 +       %put &EM_CODEBAR;
+17095 +       %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_macro_err, NOQUOTE, EM_OPEN_VARMACRO, &_METADATA));
+17096 +       %put &ERROR;
+17097 +       %put &EM_CODEBAR;
+17098 +       %goto quit;
+17099 +   %end;
+17101 +   data _null_;
+17102 +      length _STRING_ $80;
+17103 +      retain _STRING_;
+17104 +      set &_METADATA end= _eof;
+17105 +      file macFile;
+17106 +      %if (%nrbquote("&_WHERE") ne "") %then %do;
+17107 +          %let _WHERECLAUSE = where (%nrbquote(&_WHERE));
+17108 +          %unquote(&_WHERECLAUSE);
+17109 +      %end;
+17110 +      if _n_= 1 then do;
+17111 +         string= "%"!!"macro &_NAME;";
+17112 +         put string;
+17113 +      end;
+17114 +      if (length(trim("&_PREFIX")) + length(trim(&_KEY)) + length(_STRING_) + 1 + length(trim("&_DELIM")) < 80) then do;
+17115 +         if ^_eof then do;
+17116 +            if _n_= 1 then _STRING_= trim("&_PREFIX")!!trim(&_KEY)!!' '!!trim("&_DELIM");
+17117 +            else _STRING_= trim(_STRING_)!!trim("&_PREFIX")!!trim(&_KEY)!!' '!!trim("&_DELIM");
+17118 +         end;
+17119 +         if _eof then do;
+17120 +            _STRING_= trim(_STRING_)!!trim("&_PREFIX")!!trim(&_KEY);
+17121 +            put _STRING_;
+17122 +            string= "%"!!"mend &_NAME;";
+17123 +            put string;
+17124 +            %if ("&_NUMMACRO" ne "") %then %do;
+17125 +                string= strip(put(_N_, best.));
+17126 +                put "%" "global &_NUMMACRO;";
+17127 +                put "%" "let &_NUMMACRO= " string ";";
+17128 +                call symput('_METAOBS', string);
+17129 +            %end;
+17130 +         end;
+17131 +      end;
+17132 +      else do;
+17133 +         put _STRING_;
+17134 +         if ^_eof then _STRING_= trim("&_PREFIX")!!trim(&_KEY)!!' '!!trim("&_DELIM");
+17135 +         if _eof then do;
+17136 +            _STRING_= trim("&_PREFIX")!!trim(&_KEY);
+17137 +            put _STRING_;
+17138 +            string = "%"!!"mend &_NAME;";
+17139 +            put string;
+17140 +        end;
+17141 +      end;
+17142 +      if _eof then do;
+17143 +         string= strip(put(_n_, best.));
+17144 +         call symput('_METAOBS', string);
+17145 +         %if ("&_NUMMACRO" ne "") %then %do;
+17146 +             put "%" "global &_NUMMACRO;";
+17147 +             put "%" "let &_NUMMACRO= " string ";";
+17148 +         %end;
+17149 +      end;
+17150 +   run;
+17152 +   %quit:
+17154 +   %if ^&_METAOBS %then %do;
+17155 +       data _null_;
+17156 +          file macFile;
+17157 +          put "%" "macro &_NAME;";
+17158 +          put "%" "mend &_NAME;";
+17159 +          %if ("&_NUMMACRO" ne "") %then %do;
+17160 +              put "%" "global &_NUMMACRO;";
+17161 +              put "%" "let &_NUMMACRO= 0;";
+17162 +          %end;
+17163 +      run;
+17164 +   %end;
+17165 +   %inc macFile;
+17166 +   filename macFile;
+17168 +%mend EM_OPEN_VARMACRO;
+17170 +*******************************************************************************;
+17171 +*** CREATE MACRO ARRAY IN WHICH TARGET NAME ***********************************;
+17172 +*** RESOLVES TO TARGET SAS TYPE ***********************************************;
+17173 +*******************************************************************************;
+17175 +*** CALLED BY EM_OPEN_TRAIN;
+17176 +%macro CREATE_TARGET_TYPE_ARRAY;
+17178 +    data _null_;
+17179 +        set WORK.EM_TARGETDECINFO;
+17180 +        call execute('data _null_;');
+17181 +        call execute('set '!!trim(DECMETA)!!"(where= (_TYPE_= 'TARGET'));");
+17182 +        call execute('call symput(left(strip(VARIABLE)), left(strip(TYPE)));');
+17183 +        call execute('run;');
+17184 +    run;
+17186 +%mend CREATE_TARGET_TYPE_ARRAY;
+17189 +*******************************************************************************;
+17190 +*** CONVERT EM INPUT VIEWS TO DATASETS ****************************************;
+17191 +*******************************************************************************;
+17193 +*** R DOES NOT ACCEPT SAS VIEWS;
+17194 +*** CONVERT BINARY AND NOMINAL TARGETS TO CHAR VARIABLES FOR SUPERVISED TRAINING;
+17195 +*** R PMML PACKAGE EXPORTS BINARY AND NOMINAL TARGETS AS CHAR VARIABLES;
+17196 +*** CALLED BY EM_OPEN_TRAIN;
+17197 +%macro EM_OPEN_R_CONVERT_VIEW_TO_TABLE(_FILEREF, _ROLE);
+17199 +    *** CREATE CHARACTER TARGETS FOR IMPORT TO R;
+17200 +     %if ("%TRIM(&_ROLE)"= "TRAIN") %then %do;
+17201 +        data EMR_IMPORT_DATA;
+17202 +            set &EM_IMPORT_DATA;
+17203 +        %end;
+17204 +        %else %do;
+17205 +        data EMR_IMPORT_&_ROLE;
+17206 +            set &&EM_IMPORT_&_ROLE;
+17207 +        %end;
+17208 +        %if ("&EM_PROPERTY_TRAINMODE"= "SUPERVISED") %then %do;
+17209 +            %include &_FILEREF;
+17210 +            drop %EM_TARGET;
+17211 +        %end;
+17212 +    run;
+17214 +%mend EM_OPEN_R_CONVERT_VIEW_TO_TABLE;
+17216 +*******************************************************************************;
+17217 +*** CREATES TARGET NAMES FOR VARIABLES CREATED BY R ***************************;
+17218 +*******************************************************************************;
+17220 +*** DYNAMICALLY GENERATES A FILE CONTAINING STATEMENTS;
+17221 +*** TO REASSIGN OUTPUT VARIABLE NAMES FROM R PMML TO EM NAMES;
+17222 +*** CALLED BY EM_OPEN_TRAIN;
+17223 +%macro EM_OPEN_R_P_RENAME_STMT(_FILE_REF);
+17225 +    *** FILE CONTAINING REASSIGNMENT STATEMENTS;
+17226 +    filename &_FILE_REF
+17227 +        "%sysfunc(pathname(work))&EM_DSEP.EM_R_TARGET_LEV_RENAME_STMT.sas";
+17229 +    *** APPEND HEADER LINE;
+17230 +    data _null_;
+17231 +        length _line $2000;
+17232 +        file &_FILE_REF;
+17233 +        _line= "put '*** REASSIGNMENT STATEMENT(S) BELOW APPENDED BY EMR INTEGRATION;';";
+17234 +        put _line;
+17235 +    run;
+17237 +    %if ("&EM_PROPERTY_TRAINMODE"= "SUPERVISED") %then %do;                 /* SUPERVISED TRAINING */
+17239 +        *** TRY PROJECT DATA READ, RAISE EXCEPTION ON FAILURE;
+17240 +        %if ^%EM_OPEN_SET_EXISTS(WORK.EM_TARGETDECINFO) %then %do;
+17241 +           %let EMEXCEPTIONSTRING= exception.server.EMTOOL.opensource_macro, EM_OPEN_R_P_RENAME_STMT, WORK.EM_TARGETDECINFO;
+17242 +           %put &EM_CODEBAR;
+17243 +           %let ERROR= %sysfunc(sasmsg(sashelp.dmine, opensource_macro_err, NOQUOTE, EM_OPEN_R_P_RENAME_STMT, WORK.EM_TARGETDECINFO));
+17244 +           %put &ERROR;
+17245 +           %put &EM_CODEBAR;
+17246 +           %goto quit;
+17247 +        %end;
+17249 +        proc sort
+17250 +            data= WORK.EM_TARGETDECINFO
+17251 +            out= sorted_EM_TARGETDECINFO;
+17252 +            by DECMETA;
+17253 +        run;
+17255 +        *** DYNAMICALLY WRITE STATEMENTS TO FILEREF;
+17256 +        *** SHOULD SUPPORT MULTIPLE TARGETS AND TARGET LEVELS;
+17257 +        *** ACCOUNTS FOR Predicted_ and Probability_ prefixes added by PSCORE;
+17259 +        %if ("%EM_TARGET_LEVEL"= "INTERVAL") %then %do;
+17261 +            data _null_;
+17262 +                set sorted_EM_TARGETDECINFO;
+17263 +                by DECMETA;
+17264 +                if last.DECMETA then do;
+17266 +                    /* FOR INTERVAL TARGETS, THE EM PREDICTED NAME AND THE R PREDICTED NAME ARE BOTH NEEDED AT THE SAME TIME */
+17267 +                    call execute('data _tempdm_for_r;');
+17268 +                    call execute('set '!!trim(DECMETA)!!';');
+17269 +                    call execute('length ret_variable $32;');
+17270 +                    call execute('retain ret_variable;');
+17271 +                    call execute('output;');
+17272 +                    call execute('ret_variable= variable;');
+17273 +                    call execute('run;');
+17275 +                    call execute('data _null_;');
+17276 +                    call execute('length _line $2000;');
+17277 +                    call execute("file &_FILE_REF MOD;");
+17278 +                    call execute('set _tempdm_for_r (where= (_TYPE_= "PREDICTED"));');
+17279 +                    call execute ("if _TYPE_= 'PREDICTED' then do;");
+17280 +                    _line= " 'put " !! '"' !! "'!!" !! "trim(variable)!!'= Predicted_r'!!trim(substr(ret_variable, 1, 21))!!" !! "'" !! ';";' !! "'";
+17281 +                    call execute ('_line= '!!trim(_line)!!';');
+17282 +                    call execute('put _line;');
+17283 +                    call execute('_line= "";');
+17284 +                     _line= " 'put " !! '"' !! "'!!" !! "'drop Predicted_r'!!trim(substr(ret_variable, 1, 21))!!"!! "'" !! ';";' !! "'";
+17285 +                    call execute ('_line= '!!trim(_line)!!';');
+17286 +                    call execute('put _line;');
+17287 +                    call execute('end;');
+17288 +                    call execute('run;');
+17290 +                    call execute('proc datasets lib= work nolist nowarn noprint;');
+17291 +                    call execute('delete _tempdm_for_r;');
+17292 +                    call execute('run;');
+17294 +                end;
+17295 +            run;
+17297 +            proc datasets lib= work nolist nowarn noprint;
+17298 +                delete sorted_EM_TARGETDECINFO;
+17299 +            run;
+17301 +        %end;
+17302 +        %else %do;
+17304 +            data _null_;
+17305 +                set sorted_EM_TARGETDECINFO;
+17306 +                by DECMETA;
+17307 +                if last.DECMETA then do;
+17308 +                    call execute('data _null_;');
+17309 +                    call execute('length _line $2000;');
+17310 +                    call execute("file &_FILE_REF MOD;");
+17311 +                    call execute('set '!!trim(DECMETA)!!"(where= (_TYPE_= 'PREDICTED'));");
+17312 +                    call execute ("if _TYPE_= 'PREDICTED' then do;");
+17313 +                    _line= " 'put " !! '"' !! "'!!" !! "trim(variable)!!'= Probability_'!!trim(substr(level, 1, 20))!!" !! "'" !! ';";' !! "'";
+17314 +                    call execute ('_line= '!!trim(_line)!!';');
+17315 +                    call execute('put _line;');
+17316 +                    call execute('_line= "";');
+17317 +                     _line= " 'put " !! '"' !! "'!!" !! "'drop Probability_'!!trim(substr(level, 1, 20))!!"!! "'" !! ';";' !! "'";
+17318 +                    call execute ('_line= '!!trim(_line)!!';');
+17319 +                    call execute('put _line;');
+17320 +                    call execute('end;');
+17321 +                    call execute('run;');
+17322 +                end;
+17323 +            run;
+17325 +            *** WORK AROUND FOR GLM *******************************************;
+17327 +            %if ("%EM_TARGET_LEVEL"= "BINARY") %then %do;
+17329 +                data _null_;
+17330 +                    set sorted_EM_TARGETDECINFO;
+17331 +                    by DECMETA;
+17332 +                    if last.DECMETA then do;
+17334 +                        call execute('data _tempdm_for_r;');
+17335 +                        call execute('set '!!trim(DECMETA)!!' (where=(_TYPE_="PREDICTED"));');
+17336 +                        call execute('length ret_variable $32;');
+17337 +                        call execute('retain ret_variable;');
+17338 +                        call execute('output;');
+17339 +                        call execute('ret_variable= variable;');
+17340 +                        call execute('run;');
+17342 +                        call execute('data _null_;');
+17343 +                        call execute('length _line $2000;');
+17344 +                        call execute("file &_FILE_REF MOD;");
+17345 +                        call execute('set _tempdm_for_r;');
+17346 +                        call execute('by _TYPE_;');
+17347 +                        call execute('if last._TYPE_ then do;');
+17348 +                        _line= " 'put " !! '"if ' !! "'!!" !! "strip(ret_variable)!!'= . then " !! "'!!" !! "strip(ret_variable)!!'= 1-'!!strip(variable)!!'" !! ';";' !! "'";
+17349 +                        call execute ('_line= '!!trim(_line)!!';');
+17350 +                        call execute('put _line;');
+17351 +                        call execute('_line= "";');
+17352 +                        _line= " 'put " !! '"if ' !! "'!!" !! "strip(variable)!!'= . then " !! "'!!" !! "strip(variable)!!'= 1-'!!strip(ret_variable)!!'" !! ';";' !! "'";
+17353 +                        call execute ('_line= '!!trim(_line)!!';');
+17354 +                        call execute('put _line;');
+17355 +                        call execute('end;');
+17356 +                        call execute('run;');
+17358 +                        call execute('proc datasets lib= work nolist nowarn noprint;');
+17359 +                        call execute('delete _tempdm_for_r;');
+17360 +                        call execute('run;');
+17362 +                    end;
+17363 +                run;
+17365 +            %end;
+17367 +            data _null_;
+17368 +                set sorted_EM_TARGETDECINFO;
+17369 +                by DECMETA;
+17370 +                if last.DECMETA then do;
+17371 +                    call execute('data _null_;');
+17372 +                    call execute('length _line $2000;');
+17373 +                    call execute("file &_FILE_REF MOD;");
+17374 +                    call execute('set '!!trim(DECMETA)!!"(where= (_TYPE_= 'TARGET'));");
+17375 +                    call execute ("if _TYPE_= 'TARGET' then do;");
+17376 +                     _line= " 'put " !! '"' !! "'!!" !! "'drop Predicted_r'!!trim(substr(variable, 1, 21))!!"!! "'" !! ';";' !! "'";
+17377 +                    call execute ('_line= '!!trim(_line)!!';');
+17378 +                    call execute('put _line;');
+17379 +                    call execute('end;');
+17380 +                    call execute('run;');
+17381 +                end;
+17382 +            run;
+17384 +            proc datasets lib= work nolist nowarn noprint;
+17385 +                delete sorted_EM_TARGETDECINFO;
+17386 +            run;
+17388 +        %end;
+17390 +    %end;
+17391 +    %else %do;                                                              /* UNSUPERVISED TRAINING */
+17393 +        data _null_;
+17394 +            length _line $2000;
+17395 +            file &_FILE_REF MOD;
+17396 +            _line= "put '_SEGMENT_= predictedValue;';";
+17397 +            put _line;
+17398 +            _line= "put 'drop clusterAffinity_: predictedValue;';";
+17399 +            put _line;
+17400 +        run;
+17402 +    %end;
+17404 +    %quit:
+17406 +%mend EM_OPEN_R_P_RENAME_STMT;
+17408 +*******************************************************************************;
+17409 +*** COPIES FILES IN BINARY MODE ***********************************************;
+17410 +*******************************************************************************;
+17412 +*** USED TO COPY PICTURES;
+17413 +*** CALLED BY EM_OPEN_TRAIN;
+17414 +%macro EM_OPEN_BINARY_COPY(_INFILE, _OUTFILE);
+17416 +    filename _in "&_INFILE";
+17417 +    filename _out "&_OUTFILE";
+17419 +    data _null_;
+17420 +        length _filein 8 _fileid 8;
+17421 +        _filein= fopen('_in', 'I', 1, 'B');
+17422 +        _fileid= fopen('_out', 'O', 1, 'B');
+17423 +        _rec= '20'x;
+17424 +        do while(fread(_filein)= 0);
+17425 +            _rc= fget(_filein, _rec, 1);
+17426 +            _rc= fput(_fileid, _rec);
+17427 +            _rc= fwrite(_fileid);
+17428 +        end;
+17429 +        _rc = fclose(_filein);
+17430 +        _rc = fclose(_fileid);
+17431 +    run;
+17433 +    filename _in;
+17434 +    filename _out;
+17436 +%mend EM_OPEN_BINARY_COPY;
+NOTE: %INCLUDE (level 1) ending.
+NOTE: Fileref _OSUTIL has been deassigned.
+ 
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+ 
+NOTE: There were 57 observations read from the data set EMWS3.EMOPEN_VARIABLESET.
+      WHERE use in ('D', 'Y') and ROLE in ('INPUT', 'REJECTED', 'TARGET');
+NOTE: The data set WORK._VARS has 57 observations and 5 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+ 
+NOTE: The file MACFILE is:
+      Catalog Name=WORK.EMUTIL.MACRO.SOURCE,
+      Catalog Page Size=4096,
+      Number of Catalog Pages=4,
+      Created=Wed, Feb 13, 2019 05:03:48 PM,
+      Last Modified=Wed, Feb 13, 2019 05:03:48 PM,
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\emutil.sas7bcat,
+      Release Created=9.0401M4,
+      Host Created=X64_S08R2,
+      Owner Name=BUILTIN\Administrators,
+      File Size=             5KB,
+      File Size (bytes)=5120
+ 
+NOTE: 24 records were written to the file MACFILE.
+      The minimum record length was 13.
+      The maximum record length was 77.
+NOTE: There were 56 observations read from the data set WORK._VARS.
+      WHERE ((TYPE='N') and (ROLE='INPUT') and (LEVEL='INTERVAL') and USE in ('D', 'Y')) or ((TYPE='N') and (USE='Y') and (LEVEL='INTERVAL') and (ROLE='REJECTED'));
+NOTE: DATA statement used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+ 
+ 
+NOTE: %INCLUDE (level 1) file MACFILE is file WORK.EMUTIL.MACRO.SOURCE.
+17437 +%macro EM_R_NUMERIC_INPUT;
+17438 +IMP_crashDirectionDescrEast + IMP_crashDirectionDescrNorth +
+17439 +IMP_crashDirectionDescrSouth + IMP_crashDirectionDescrWest + IMP_roadLane2 +
+17440 +PCTL_crashDistanc03_50_250 + PCTL_crashDistanc04_250_high +
+17441 +TG_carStationWagon0 + TG_carStationWagon1 + TG_carStationWagon2 + TG_ditch0 +
+17442 +TG_junctionTyp_OTHER_ + TG_lightBRIGHT_SUN + TG_lightOVERCAST +
+17443 +TG_motorcycle0 + TG_multiVehiclMULTI_VEHICLE + TG_multiVehiclSINGLE_VEHICLE +
+17444 +TG_multiVehicl_OTHER_ + TG_numberOfLanes2 + TG_regionDescAUCKLAND +
+17445 +TG_regionDescCANTERBURY + TG_regionDescWAIKATO + TG_regionDesc_OTHER_ +
+17446 +TG_roadMarkingsCENTRE_LINE + TG_roadMarkingsNO_MARKS +
+17447 +TG_roadMarkingsRAISED_ISLAND + TG_roadMarkings_OTHER_ + TG_roadWetDRY +
+17448 +TG_roadWetWET + TG_speedLimit50 + TG_speedLimit_OTHER_ + TG_suv_OTHER_ +
+17449 +TG_trafficContrNIL + TG_trafficContrN_A + crashSHDescriptionNo +
+17450 +crashSHDescriptionYes + darkLightDark + darkLightLight +
+17451 +directionRoleDescriptioEast + directionRoleDescriptioNorth +
+17452 +directionRoleDescriptioSouth + directionRoleDescriptioWest + flatHillFlat +
+17453 +flatHillHill + intersectionMidbIntersection + intersectionMidbMid_Block +
+17454 +roadCurvatureEasy_Curve + roadCurvatureModerate_Curve +
+17455 +roadCurvatureStraight_Road + streetLightNone + streetLightOff +
+17456 +streetLightOn + streetLightUnknown + urbanOpenroad + vanOrUtility0 +
+17457 +vanOrUtility1
+17458 +%mend EM_R_NUMERIC_INPUT;
+17459 +%global EM_NUM_R_NUMERIC_INPUT;
+17460 +%let EM_NUM_R_NUMERIC_INPUT= 56 ;
+NOTE: %INCLUDE (level 1) ending.
+NOTE: Fileref MACFILE has been deassigned.
+ 
+NOTE: The file MACFILE is:
+      Catalog Name=WORK.EMUTIL.MACRO.SOURCE,
+      Catalog Page Size=4096,
+      Number of Catalog Pages=5,
+      Created=Wed, Feb 13, 2019 05:03:48 PM,
+      Last Modified=Wed, Feb 13, 2019 05:03:48 PM,
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\emutil.sas7bcat,
+      Release Created=9.0401M4,
+      Host Created=X64_S08R2,
+      Owner Name=BUILTIN\Administrators,
+      File Size=            17KB,
+      File Size (bytes)=17408
+ 
+NOTE: 0 records were written to the file MACFILE.
+NOTE: There were 0 observations read from the data set WORK._VARS.
+      WHERE ((ROLE='INPUT') and (LEVEL not = 'INTERVAL') and USE in ('D', 'Y')) or ((USE='Y') and (LEVEL not = 'INTERVAL') and (ROLE='REJECTED'));
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+ 
+NOTE: The file MACFILE is:
+      Catalog Name=WORK.EMUTIL.MACRO.SOURCE,
+      Catalog Page Size=4096,
+      Number of Catalog Pages=5,
+      Created=Wed, Feb 13, 2019 05:03:48 PM,
+      Last Modified=Wed, Feb 13, 2019 05:03:48 PM,
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\emutil.sas7bcat,
+      Release Created=9.0401M4,
+      Host Created=X64_S08R2,
+      Owner Name=BUILTIN\Administrators,
+      File Size=            21KB,
+      File Size (bytes)=21504
+ 
+NOTE: 4 records were written to the file MACFILE.
+      The minimum record length was 24.
+      The maximum record length was 27.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+NOTE: %INCLUDE (level 1) file MACFILE is file WORK.EMUTIL.MACRO.SOURCE.
+17461 +%macro EM_R_FACTOR_INPUT;
+17462 +%mend EM_R_FACTOR_INPUT;
+17463 +%global EM_NUM_R_FAC_INPUT;
+17464 +%let EM_NUM_R_FAC_INPUT= 0;
+NOTE: %INCLUDE (level 1) ending.
+NOTE: Fileref MACFILE has been deassigned.
+ 
+NOTE: The file MACFILE is:
+      Catalog Name=WORK.EMUTIL.MACRO.SOURCE,
+      Catalog Page Size=4096,
+      Number of Catalog Pages=5,
+      Created=Wed, Feb 13, 2019 05:03:48 PM,
+      Last Modified=Wed, Feb 13, 2019 05:03:48 PM,
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\emutil.sas7bcat,
+      Release Created=9.0401M4,
+      Host Created=X64_S08R2,
+      Owner Name=BUILTIN\Administrators,
+      File Size=            21KB,
+      File Size (bytes)=21504
+ 
+NOTE: 0 records were written to the file MACFILE.
+NOTE: There were 0 observations read from the data set WORK._VARS.
+      WHERE ((TYPE='C') and (ROLE='INPUT') and USE in ('D', 'Y')) or ((TYPE='C') and (USE='Y') and (ROLE='REJECTED'));
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+ 
+NOTE: The file MACFILE is:
+      Catalog Name=WORK.EMUTIL.MACRO.SOURCE,
+      Catalog Page Size=4096,
+      Number of Catalog Pages=5,
+      Created=Wed, Feb 13, 2019 05:03:48 PM,
+      Last Modified=Wed, Feb 13, 2019 05:03:48 PM,
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\emutil.sas7bcat,
+      Release Created=9.0401M4,
+      Host Created=X64_S08R2,
+      Owner Name=BUILTIN\Administrators,
+      File Size=            21KB,
+      File Size (bytes)=21504
+ 
+NOTE: 4 records were written to the file MACFILE.
+      The minimum record length was 22.
+      The maximum record length was 28.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+NOTE: %INCLUDE (level 1) file MACFILE is file WORK.EMUTIL.MACRO.SOURCE.
+17465 +%macro EM_R_CHAR_INPUT;
+17466 +%mend EM_R_CHAR_INPUT;
+17467 +%global EM_NUM_R_CHAR_INPUT;
+17468 +%let EM_NUM_R_CHAR_INPUT= 0;
+NOTE: %INCLUDE (level 1) ending.
+NOTE: Fileref MACFILE has been deassigned.
+ 
+NOTE: Deleting WORK._VARS (memtype=DATA).
+ 
+NOTE: PROCEDURE DATASETS used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+NOTE: The quoted string currently being processed has become more than 262 characters long.  You might have unbalanced quotation marks.
+ 
+NOTE: The data set EMWS3.EMOPEN_HANDLES has 5 observations and 3 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+ 
+ 
+ 
+WARNING: Data too long for column "Contents"; truncated to 256 characters to fit.
+NOTE: There were 5 observations read from the data set EMWS3.EMOPEN_HANDLES.
+NOTE: The PROCEDURE PRINT printed page 4.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+ 
+ 
+ 
+NOTE: The data set WORK.EM_USER_REPORT has 132 observations and 4 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.03 seconds
+ 
+ 
+ 
+NOTE: The file _RSUBMIT is:
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\RSUBMIT.sas,
+      RECFM=V,LRECL=131068,File Size (bytes)=0,
+      Last Modified=13Feb2019:17:03:48,
+      Create Time=13Feb2019:17:03:48
+ 
+NOTE: 18 records were written to the file _RSUBMIT.
+      The minimum record length was 3.
+      The maximum record length was 82.
+NOTE: DATA statement used (Total process time):
+      real time           0.03 seconds
+      cpu time            0.00 seconds
+ 
+ 
+NOTE: %INCLUDE (level 1) file _COPY is file SASHELP.EMUTIL.EM_COPYFILE.SOURCE.
+17469 +%macro em_copyfile(infref=, outfref=, append=N);
+17470 +
+17471 +   %if %sysfunc(fileref(&infref))=0 and %sysfunc(fileref(&outfref))<=0 %then %do;
+17472 +
+17473 +       %let omode =;
+17474 +       %if &append=Y %then
+17475 +           %let omode = MOD;
+17476 +       data _null_;
+17477 +          length line $20000;
+17478 +          file &outfref &omode lrecl=20000;
+17479 +          fid=fopen("&infref",'i',20000,'v');
+17480 +          if fid > 0  then do;
+17481 +             do while(^fread(fid));
+17482 +                rlen = frlen(fid);
+17483 +                rc= fget(fid,line,20000);
+17484 +                start = length(line)-length(left(line))+1;
+17485 +                line=strip(line);
+17486 +                put @start line;
+17487 +             end;
+17488 +             if fid > 0  then rc=fclose(fid);
+17489 +          end;
+17490 +       run;
+17491 +
+17492 +   %end;
+17493 +%mend em_copyfile;
+NOTE: %INCLUDE (level 1) ending.
+NOTE: Fileref _COPY has been deassigned.
+ 
+NOTE: The file _RSUBMIT is:
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\RSUBMIT.sas,
+      RECFM=V,LRECL=80000,File Size (bytes)=491,
+      Last Modified=13Feb2019:17:03:48,
+      Create Time=13Feb2019:17:03:48
+ 
+NOTE: 17 records were written to the file _RSUBMIT.
+      The minimum record length was 1.
+      The maximum record length was 105.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+NOTE: Fileref _SUBMIT has been deassigned.
+ 
+NOTE: The file _RSUBMIT is:
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\RSUBMIT.sas,
+      RECFM=V,LRECL=131068,File Size (bytes)=1191,
+      Last Modified=13Feb2019:17:03:48,
+      Create Time=13Feb2019:17:03:48
+ 
+NOTE: 4 records were written to the file _RSUBMIT.
+      The minimum record length was 10.
+      The maximum record length was 71.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+BINARY
+ 
+NOTE: The file _TARGETS is:
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\EM_R_TARGET_STMT.sas,
+      RECFM=V,LRECL=32767,File Size (bytes)=0,
+      Last Modified=13Feb2019:17:03:48,
+      Create Time=13Feb2019:17:03:48
+ 
+NOTE: 1 record was written to the file _TARGETS.
+      The minimum record length was 16.
+      The maximum record length was 16.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+NOTE: %INCLUDE (level 1) file _TARGETS is file C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\EM_R_TARGET_STMT.sas.
+17494 +rtarget= target;
+NOTE: %INCLUDE (level 1) ending.
+ 
+NOTE: There were 46609 observations read from the data set EMWS3.PART_TRAIN.
+NOTE: There were 46609 observations read from the data set EMWS3.IMPT_TRAIN.
+NOTE: View EMWS3.VARCLUS_TRAIN.VIEW used (Total process time):
+      real time           1.29 seconds
+      cpu time            1.29 seconds
+ 
+NOTE: There were 46609 observations read from the data set EMWS3.TRANS_TRAIN.
+NOTE: There were 46609 observations read from the data set EMWS3.VARCLUS_TRAIN.
+NOTE: The data set WORK.EMR_IMPORT_DATA has 46609 observations and 346 variables.
+NOTE: DATA statement used (Total process time):
+      real time           1.30 seconds
+      cpu time            1.31 seconds
+ 
+ 
+NOTE: %INCLUDE (level 1) file _TARGETS is file C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\EM_R_TARGET_STMT.sas.
+17495 +rtarget= target;
+NOTE: %INCLUDE (level 1) ending.
+ 
+NOTE: There were 19977 observations read from the data set EMWS3.PART_VALIDATE.
+NOTE: There were 19977 observations read from the data set EMWS3.IMPT_VALIDATE.
+NOTE: View EMWS3.VARCLUS_VALIDATE.VIEW used (Total process time):
+      real time           0.59 seconds
+      cpu time            0.59 seconds
+ 
+NOTE: There were 19977 observations read from the data set EMWS3.TRANS_VALIDATE.
+NOTE: There were 19968 observations read from the data set EMWS3.VARCLUS_VALIDATE.
+NOTE: The data set WORK.EMR_IMPORT_VALIDATE has 19968 observations and 346 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.61 seconds
+      cpu time            0.62 seconds
+ 
+ 
+NOTE: Fileref _TARGETS has been deassigned.
+NOTE: IML Ready
+NOTE: The quoted string currently being processed has become more than 262 characters long.  You might have unbalanced quotation marks.
+NOTE: %INCLUDE (level 1) file _RSUBMIT is file C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\RSUBMIT.sas.
+17496 +_WORK_DIR= "%sysfunc(getoption(work))";
+17497 +_WORK_DIR= tranwrd(_WORK_DIR, "\", "/");
+17498 +submit
+17499 +   _WORK_DIR
+17500 +   EMR_MODEL
+17501 +   EMR_NUM_INPUT
+17502 +   EMR_CLASS_INPUT
+17503 +   EMR_CHAR_INPUT
+17504 +   EMR_NUM_TARGET
+17505 +   EMR_CLASS_TARGET
+17506 +   EMR_IMPORT_DATA
+17507 +   EMR_IMPORT_VALIDATE
+17508 +   EMR_EXPORT_TRAIN
+17509 +   EMR_EXPORT_VALIDATE
+17510 +/R;
+17511 +EMR_IMPORT_DATA$rtarget <- factor(EMR_IMPORT_DATA$rtarget, ordered= FALSE)
+17512 +EMR_IMPORT_VALIDATE$rtarget <- factor(EMR_IMPORT_VALIDATE$rtarget, ordered= FALSE)
+17513 +setwd("&_WORK_DIR")
+17514 +# there are faster packages but this is for illustrative purposes
+17515 +library(randomForest) 
+17516 + 
+17517 +set.seed(12345) 
+17518 +# hyper tuning the parameters has been ignored so that we can quickly get results in the time of the HOW
+17519 +
+17520 +&EMR_MODEL <- randomForest(&EMR_CLASS_TARGET ~ &EMR_CLASS_INPUT + &EMR_NUM_INPUT, 
+17521 +ntree=100, mtry=3, maxnodes=50,
+17522 +data=&EMR_IMPORT_DATA, importance=TRUE) 
+17523 +
+17524 +# this can be viewed in the EM results under the output window 
+17525 +importance(&EMR_MODEL) 
+17526 +
+17527 +# create predictions that can be compared within EM
+17528 +&EMR_EXPORT_TRAIN <- predict(&EMR_MODEL, &EMR_IMPORT_DATA, type="prob") 
+17529 +&EMR_EXPORT_VALIDATE <- predict(&EMR_MODEL, &EMR_IMPORT_VALIDATE, type="prob")
+17530 + 
+17531 +emRExportSet <- vector()
+17532 +if (exists("EMR_EXPORT_TRAIN")) {emRExportSet <- c(emRExportSet, 1)}
+17533 +if (exists("EMR_EXPORT_VALIDATE")) {emRExportSet <- c(emRExportSet, 2)}
+17534 +endsubmit;
+WARNING: R: randomForest 4.6-12
+WARNING: R: Type rfNews() to see new features/changes/bug fixes.
+NOTE: %INCLUDE (level 1) ending.
+NOTE: Exiting IML.
+NOTE: The PROCEDURE IML printed page 5.
+NOTE: PROCEDURE IML used (Total process time):
+      real time           34.31 seconds
+      cpu time            1.26 seconds
+ 
+ 
+NOTE: There were 46609 observations read from the data set EMWS3.PART_TRAIN.
+NOTE: There were 46609 observations read from the data set EMWS3.IMPT_TRAIN.
+NOTE: View EMWS3.VARCLUS_TRAIN.VIEW used (Total process time):
+      real time           1.19 seconds
+      cpu time            1.18 seconds
+ 
+NOTE: There were 46609 observations read from the data set EMWS3.TRANS_TRAIN.
+NOTE: PROCEDURE SQL used (Total process time):
+      real time           1.20 seconds
+      cpu time            1.18 seconds
+ 
+ 
+ 
+NOTE: The data set WORK._PNAMES has 2 observations and 1 variables.
+NOTE: PROCEDURE CONTENTS used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+ 
+ 
+ 
+NOTE: The file MACFILE is:
+      Catalog Name=WORK.EMUTIL.MACRO.SOURCE,
+      Catalog Page Size=4096,
+      Number of Catalog Pages=5,
+      Created=Wed, Feb 13, 2019 05:03:48 PM,
+      Last Modified=Wed, Feb 13, 2019 05:03:48 PM,
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\emutil.sas7bcat,
+      Release Created=9.0401M4,
+      Host Created=X64_S08R2,
+      Owner Name=BUILTIN\Administrators,
+      File Size=            21KB,
+      File Size (bytes)=21504
+ 
+NOTE: 7 records were written to the file MACFILE.
+      The minimum record length was 4.
+      The maximum record length was 28.
+NOTE: There were 2 observations read from the data set WORK._PNAMES.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+NOTE: %INCLUDE (level 1) file MACFILE is file WORK.EMUTIL.MACRO.SOURCE.
+17535 +%macro EM_R_MERGE_VAR;
+17536 +_ _0
+17537 +%mend EM_R_MERGE_VAR;
+17538 +%global EM_NUM_R_MERGE_VAR;
+17539 +%let EM_NUM_R_MERGE_VAR= 2 ;
+17540 +%global EM_NUM_R_MERGE_VAR;
+17541 +%let EM_NUM_R_MERGE_VAR= 2 ;
+NOTE: %INCLUDE (level 1) ending.
+NOTE: Fileref MACFILE has been deassigned.
+NOTE: Renaming variable _ to EMR_VAR1.
+NOTE: Renaming variable _0 to EMR_VAR2.
+ 
+NOTE: MODIFY was successful for WORK.EMR_EXPORT_TRAIN.DATA.
+ 
+NOTE: PROCEDURE DATASETS used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+ 
+ 
+ 
+NOTE: There were 46609 observations read from the data set EMWS3.PART_TRAIN.
+NOTE: There were 46609 observations read from the data set EMWS3.IMPT_TRAIN.
+NOTE: View EMWS3.VARCLUS_TRAIN.VIEW used (Total process time):
+      real time           1.29 seconds
+      cpu time            1.29 seconds
+ 
+NOTE: There were 46609 observations read from the data set EMWS3.TRANS_TRAIN.
+NOTE: There were 46609 observations read from the data set EMWS3.VARCLUS_TRAIN.
+NOTE: There were 46609 observations read from the data set WORK.EMR_EXPORT_TRAIN.
+NOTE: The data set EMWS3.EMOPEN_TRAIN has 46609 observations and 348 variables.
+NOTE: DATA statement used (Total process time):
+      real time           1.30 seconds
+      cpu time            1.31 seconds
+ 
+ 
+NOTE: There were 19977 observations read from the data set EMWS3.PART_VALIDATE.
+NOTE: There were 19977 observations read from the data set EMWS3.IMPT_VALIDATE.
+NOTE: View EMWS3.VARCLUS_VALIDATE.VIEW used (Total process time):
+      real time           0.55 seconds
+      cpu time            0.56 seconds
+ 
+NOTE: There were 19977 observations read from the data set EMWS3.TRANS_VALIDATE.
+NOTE: PROCEDURE SQL used (Total process time):
+      real time           0.57 seconds
+      cpu time            0.57 seconds
+ 
+ 
+ 
+NOTE: The data set WORK._PNAMES has 2 observations and 1 variables.
+NOTE: PROCEDURE CONTENTS used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+ 
+NOTE: The file MACFILE is:
+      Catalog Name=WORK.EMUTIL.MACRO.SOURCE,
+      Catalog Page Size=4096,
+      Number of Catalog Pages=5,
+      Created=Wed, Feb 13, 2019 05:03:48 PM,
+      Last Modified=Wed, Feb 13, 2019 05:04:26 PM,
+      Filename=C:\Users\sasdemo\AppData\Local\Temp\SAS Temporary Files\_TD33180_SASBAP_\emutil.sas7bcat,
+      Release Created=9.0401M4,
+      Host Created=X64_S08R2,
+      Owner Name=BUILTIN\Administrators,
+      File Size=            21KB,
+      File Size (bytes)=21504
+ 
+NOTE: 7 records were written to the file MACFILE.
+      The minimum record length was 4.
+      The maximum record length was 28.
+NOTE: There were 2 observations read from the data set WORK._PNAMES.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+NOTE: %INCLUDE (level 1) file MACFILE is file WORK.EMUTIL.MACRO.SOURCE.
+17542 +%macro EM_R_MERGE_VAR;
+17543 +_ _0
+17544 +%mend EM_R_MERGE_VAR;
+17545 +%global EM_NUM_R_MERGE_VAR;
+17546 +%let EM_NUM_R_MERGE_VAR= 2 ;
+17547 +%global EM_NUM_R_MERGE_VAR;
+17548 +%let EM_NUM_R_MERGE_VAR= 2 ;
+NOTE: %INCLUDE (level 1) ending.
+NOTE: Fileref MACFILE has been deassigned.
+NOTE: Renaming variable _ to EMR_VAR1.
+NOTE: Renaming variable _0 to EMR_VAR2.
+ 
+NOTE: MODIFY was successful for WORK.EMR_EXPORT_VALIDATE.DATA.
+ 
+NOTE: PROCEDURE DATASETS used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+ 
+ 
+ 
+NOTE: There were 19977 observations read from the data set EMWS3.PART_VALIDATE.
+NOTE: There were 19977 observations read from the data set EMWS3.IMPT_VALIDATE.
+NOTE: View EMWS3.VARCLUS_VALIDATE.VIEW used (Total process time):
+      real time           0.60 seconds
+      cpu time            0.59 seconds
+ 
+NOTE: There were 19977 observations read from the data set EMWS3.TRANS_VALIDATE.
+NOTE: There were 19968 observations read from the data set EMWS3.VARCLUS_VALIDATE.
+NOTE: There were 19968 observations read from the data set WORK.EMR_EXPORT_VALIDATE.
+NOTE: The data set EMWS3.EMOPEN_VALIDATE has 19968 observations and 348 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.61 seconds
+      cpu time            0.60 seconds
+ 
+ 
+NOTE: %INCLUDE (level 1) file _CHANGE is file SASHELP.EMUTIL.EM_METACHANGE.SOURCE.
+17549 +/*
+17550 +       MACRO: EM_METACHANGE
+17551 +
+17552 +       PURPOSE: Create data step code used to modify the metadata exported by a node
+17553 +
+17554 +       PARAMETERS:
+17555 +
+17556 +            KEY         = Key corresponding to the file to write the deltacode (optional) e.g. CDELTA_TRAIN
+17557 +            NAME        = variable name (required)
+17558 +            ROLE        = variable role (optional)
+17559 +            LEVEL       = measurement level (optional)
+17560 +            ORDER       = level ordering  (optional)
+17561 +            COMMENT     = text used to populate the COMMENT variable (optional)
+17562 +       USAGE:
+17563 +
+17564 +            %em_metachange(KEY=, NAME=, ROLE=, LEVEL=, ORDER=, COMMENT=, LOWERLIMIT=, UPPERLIMIT=, DELETE=N);
+17565 +
+17566 +       AUTHOR:   Dominique Latour
+17567 +
+17568 +       AMENDMENTS: Initial Version                   06Apr05 SASDZL
+17569 +*/
+17570 +
+17571 +%macro em_metachange(key=CDELTA_TRAIN, delete=N,  name= , role= , level= , order= ,comment=, lowerlimit=., upperlimit=.);
+17572 +
+17573 +   %local em_deltaDs em_deltalevel em_deltarole em_deltaorder em_deltacomment;
+17574 +
+17575 +   %if &name eq  %then %do;
+17576 +       %put ERROR: Variable NAME not specified;
+17577 +       %goto doend;
+17578 +   %end;
+17579 +
+17580 +   %if &Key eq  %then %do;
+17581 +       %put ERROR: File Key not specified;
+17582 +       %goto doend;
+17583 +   %end;
+17584 +
+17585 +   %let em_deltaDs = WORK.EM_METACHANGE;
+17586 +
+17587 +   data &em_deltaDs;
+17588 +
+17589 +    %if %sysfunc(exist(&em_deltaDs)) eq 0 %then %do;
+17590 +        length KEY $32 DELETE $1 UNAME $32 ROLE $32 LEVEL $10 ORDER $8 COMMENT $64 LOWERLIMIT 8 UPPERLIMIT 8;
+17591 +    %end;
+17592 +    %else %do;
+17593 +        set &em_deltaDs end=eof;
+17594 +        output;
+17595 +        if eof then do;
+17596 +   %end;
+17597 +
+17598 +        KEY        = upcase("&key");
+17599 +        UNAME      = upcase("&name");
+17600 +
+17601 +        DELETE     = upcase("&delete");
+17602 +
+17603 +        %let em_deltarole = %sysfunc(tranwrd(&role, %str(%'),''));
+17604 +        ROLE       = upcase("&em_deltarole");
+17605 +
+17606 +        %let em_deltalevel = %sysfunc(tranwrd(&level, %str(%'),''));
+17607 +        LEVEL      = upcase("&em_deltalevel");
+17608 +
+17609 +        %let em_deltaorder = %sysfunc(tranwrd(&order, %str(%'),''));
+17610 +        ORDER      = upcase("&em_deltaorder");
+17611 +
+17612 +        %let em_deltacomment = %sysfunc(tranwrd(&comment, %str(%'),''));
+17613 +        COMMENT    = "&em_deltacomment";
+17614 +
+17615 +        LOWERLIMIT = &lowerlimit;
+17616 +        UPPERLIMIT = &upperlimit;
+17617 +        output;
+17618 +    %if %sysfunc(exist(&em_deltaDs)) > 0 %then %do;
+17619 +        end;
+17620 +    %end;
+17621 +
+17622 +   run;
+17623 +   %doend:
+17624 +%mend em_metachange;
+17625 +
+NOTE: %INCLUDE (level 1) ending.
+NOTE: Fileref _CHANGE has been deassigned.
+ 
+NOTE: The data set WORK.EM_METACHANGE has 1 observations and 9 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+ 
+NOTE: There were 1 observations read from the data set WORK.EM_METACHANGE.
+NOTE: The data set WORK.EM_METACHANGE has 2 observations and 9 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+ 
+NOTE: Deleting WORK._PNAMES (memtype=DATA).
+ 
+NOTE: PROCEDURE DATASETS used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+ 
+NOTE: The file _OUT is:
+      Filename=D:\Workshop\HOW\HOW-Open-Source-Integration\Workspaces\EMWS3\EMOPEN\RSUBMIT.sas,
+      RECFM=V,LRECL=20000,File Size (bytes)=0,
+      Last Modified=13Feb2019:17:04:28,
+      Create Time=13Feb2019:14:39:39
+ 
+NOTE: 39 records were written to the file _OUT.
+      The minimum record length was 1.
+      The maximum record length was 105.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+ 
+ 
+NOTE: Fileref _RSUBMIT has been deassigned.
+NOTE: Fileref _OUT has been deassigned.
+ 
+NOTE: The data set WORK._CSVDIRLIST has 0 observations and 1 variables.
+NOTE: The data set WORK._PICDIRLIST has 0 observations and 1 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+NOTE: Fileref _WORKDIR has been deassigned.
+*------------------------------------------------------------*
+NOTE: Graphic output from R was not found.
+*------------------------------------------------------------*
+*------------------------------------------------------------*
+NOTE: Text output from R was not found.
+*------------------------------------------------------------*
+17626  *------------------------------------------------------------*;
+17627  * End TRAIN: EMOPEN;
+17628  *------------------------------------------------------------*;
+ 
+17629  *------------------------------------------------------------*;
+17630  * Close any missing semi colons;
+17631  *------------------------------------------------------------*;
+17632  ;
+17633  ;
+17634  ;
+17635  ;
+17636  quit;
+17637  *------------------------------------------------------------*;
+17638  * Close any unbalanced quotes;
+17639  *------------------------------------------------------------*;
+17640  /*; *"; *'; */
+17641  ;
+17642  run;
+17643  quit;
+17644  /* Reset EM Options */
+17645  options formchar="|----|+|---+=|-/\<>*";
+17646  options nocenter ls=256 ps=10000;
+17647  goptions reset=all device=GIF NODISPLAY;
+ 
+17648  proc sort data=WORK.EM_METACHANGE;
+17649  by key uname;
+17650  run;
+ 
+NOTE: There were 2 observations read from the data set WORK.EM_METACHANGE.
+NOTE: The data set WORK.EM_METACHANGE has 2 observations and 9 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+17651  filename x "D:\Workshop\HOW\HOW-Open-Source-Integration\Workspaces\EMWS3\EMOPEN\CDELTA_TRAIN.sas";
+17652  data _null_;
+17653  file x;
+17654  put 'if upcase(NAME) = "EMR_VAR1" then do;';
+17655  put 'ROLE = "PREDICT";';
+17656  put 'COMMENT = "CREATED BY THE R LANGUAGE FOR STATISTICAL ANALYSIS";';
+17657  put 'end;';
+17658  put 'else ';
+17659  put 'if upcase(NAME) = "EMR_VAR2" then do;';
+17660  put 'ROLE = "PREDICT";';
+17661  put 'COMMENT = "CREATED BY THE R LANGUAGE FOR STATISTICAL ANALYSIS";';
+17662  put 'end;';
+17663  run;
+ 
+NOTE: The file X is:
+      Filename=D:\Workshop\HOW\HOW-Open-Source-Integration\Workspaces\EMWS3\EMOPEN\CDELTA_TRAIN.sas,
+      RECFM=V,LRECL=32767,File Size (bytes)=0,
+      Last Modified=13Feb2019:17:04:28,
+      Create Time=13Feb2019:14:16:35
+ 
+NOTE: 9 records were written to the file X.
+      The minimum record length was 4.
+      The maximum record length was 63.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+17664  filename x;
+NOTE: Fileref X has been deassigned.
+ 
+17665  proc sort data=WORK.EM_USER_REPORT;
+17666  by ID VIEW;
+17667  run;
+ 
+NOTE: There were 132 observations read from the data set WORK.EM_USER_REPORT.
+NOTE: The data set WORK.EM_USER_REPORT has 132 observations and 4 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+ 
+ 
+*------------------------------------------------------------*
+* Score Log
+Date:                February 13, 2019
+Time:                17:04:29
+*------------------------------------------------------------*
+17769  %let EMEXCEPTIONSTRING=;
+17770  *------------------------------------------------------------*;
+17771  * SCORE: EMOPEN;
+17772  *------------------------------------------------------------*;
+17773  %let EM_ACTION = SCORE;
+17774  %let syscc = 0;
+17775
+17776  *******************************************************************************;
+17777  *** MAIN MACRO FOR EM OPEN SOURCE INTEGRATION EXTENSION NODE ******************;
+17778  *******************************************************************************;
+17779
+17780  %macro EM_OPEN_MAIN;
+17781
+17782     %if %upcase("&EM_ACTION")= "CREATE" %then %do;
+17783         filename _create catalog 'sashelp.emutil.em_open_create.source';
+17784         %include _create;
+17785         filename _create;
+17786         %EM_OPEN_CREATE;
+17787     %end;
+17788     %else
+17789     %if %upcase("&EM_ACTION")= "TRAIN" %then %do;
+17790         filename _train catalog 'sashelp.emutil.em_open_train.source';
+17791         %include _train;
+17792         filename _train;
+17793         %EM_OPEN_TRAIN;
+17794     %end;
+17795
+17796  %mend EM_OPEN_MAIN;
+17797
+17798  %EM_OPEN_MAIN;
+17799  *------------------------------------------------------------*;
+17800  * End SCORE: EMOPEN;
+17801  *------------------------------------------------------------*;
+ 
+17803  *------------------------------------------------------------*;
+17804  * EMOPEN: Computing metadata for TRAIN data;
+17805  *------------------------------------------------------------*;
+ 
+*------------------------------------------------------------*
+* Report Log
+Date:                February 13, 2019
+Time:                17:04:29
+*------------------------------------------------------------*
+18183  %let EMEXCEPTIONSTRING=;
+18184  *------------------------------------------------------------*;
+18185  * REPORT: EMOPEN;
+18186  *------------------------------------------------------------*;
+18187  %let EM_ACTION = REPORT;
+18188  %let syscc = 0;
+18189
+18190  *******************************************************************************;
+18191  *** MAIN MACRO FOR EM OPEN SOURCE INTEGRATION EXTENSION NODE ******************;
+18192  *******************************************************************************;
+18193
+18194  %macro EM_OPEN_MAIN;
+18195
+18196     %if %upcase("&EM_ACTION")= "CREATE" %then %do;
+18197         filename _create catalog 'sashelp.emutil.em_open_create.source';
+18198         %include _create;
+18199         filename _create;
+18200         %EM_OPEN_CREATE;
+18201     %end;
+18202     %else
+18203     %if %upcase("&EM_ACTION")= "TRAIN" %then %do;
+18204         filename _train catalog 'sashelp.emutil.em_open_train.source';
+18205         %include _train;
+18206         filename _train;
+18207         %EM_OPEN_TRAIN;
+18208     %end;
+18209
+18210  %mend EM_OPEN_MAIN;
+18211
+18212  %EM_OPEN_MAIN;
+18213  *------------------------------------------------------------*;
+18214  * End REPORT: EMOPEN;
+18215  *------------------------------------------------------------*;
+ 
+18216  /* Reset EM Options */
+18217  options formchar="|----|+|---+=|-/\<>*";
+18218  options nocenter ls=256 ps=10000;
+18219  goptions reset=all device=GIF NODISPLAY;
+ 

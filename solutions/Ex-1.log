@@ -1,0 +1,48 @@
+*------------------------------------------------------------*
+* Training Log
+Date:                February 13, 2019
+Time:                14:10:54
+*------------------------------------------------------------*
+15252  %let EMEXCEPTIONSTRING=;
+15253  %let syscc = 0;
+15449  *------------------------------------------------------------*;
+15450  * EMCODE: Generation of macros and macro variables;
+15451  * To see the code generated, set the EM_DEBUG macro variable to SOURCE or _ALL_;
+15452  *------------------------------------------------------------*;
+
+15453  %let syscc = 0;
+15454  %inc "D:\Workshop\HOW\HOW-Open-Source-Integration\Workspaces\EMWS2\EMCODE\EMTRAINCODE.sas";
+NOTE: %INCLUDE (level 1) file D:\Workshop\HOW\HOW-Open-Source-Integration\Workspaces\EMWS2\EMCODE\EMTRAINCODE.sas is file D:\Workshop\HOW\HOW-Open-Source-Integration\Workspaces\EMWS2\EMCODE\EMTRAINCODE.sas.
+15455 +proc options option = rlang;
+15456 +run;
+
+    SAS (r) Proprietary Software Release 9.4  TS1M4
+
+ RLANG             Enables SAS to execute R language statements.
+NOTE: PROCEDURE OPTIONS used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+15457 +
+NOTE: %INCLUDE (level 1) ending.
+15458  *------------------------------------------------------------*;
+15459  * Close any missing semi colons;
+15460  *------------------------------------------------------------*;
+15461  ;
+15462  ;
+15463  ;
+15464  ;
+15465  quit;
+15466  *------------------------------------------------------------*;
+15467  * Close any unbalanced quotes;
+15468  *------------------------------------------------------------*;
+15469  /*; *"; *'; */
+15470  ;
+15471  run;
+15472  quit;
+15473  /* Reset EM Options */
+15474  options formchar="|----|+|---+=|-/\<>*";
+15475  options nocenter ls=256 ps=10000;
+15476  goptions reset=all device=GIF NODISPLAY;
+
