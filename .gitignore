@@ -5,3 +5,7 @@
 # dont include office files
 *.docx
 *.pptx
+
+# for now exclude the R data and history files
+*.Rdata
+*.Rhistory
