@@ -25,7 +25,7 @@
 
 # Exercise 4a enter the name of the package
 # load the swat package so that R can interface with CAS
-library(swat)
+
 options(cas.trace.actions = FALSE)
 options(cas.print.messages = TRUE)
 
@@ -34,18 +34,17 @@ setwd("D:/Workshop/HOW")
 
 #### load data ####
 # Exercise 4a - connecting to CAS
-conn2cas <- CAS("server-name", port_number, protocol="http")
+
 
 # load dataset into memory
 castbl_cas_crash <- cas.read.csv(conn2cas, "cas_crash.csv")
 
-# in some functions you need to pass the name of the table not the CASTable object
+# in some functions you need to pass the name of the table object not the object itself
 table_name_str <- 'cas_crash'
 
 #### prep data ####
 # Exercise 4b
-listActionSets(conn2cas)$actionset
-loadActionSet(conn2cas, 'decisionTree')
+
 
 # load the action sets for sampling and imputation respectively
 loadActionSet(conn2cas, 'sampling')
@@ -84,6 +83,7 @@ cas.sampling.srs(conn2cas,
 
 
 # impute missing values
+# double check if the first argument is the table name or the cas object
 cas.dataPreprocess.impute(castbl_cas_crash,
                              outVarsNamePrefix = 'IMP',
                              methodContinuous = 'MEDIAN',
@@ -95,23 +95,15 @@ cas.dataPreprocess.impute(castbl_cas_crash,
 
 #### create model ####
 # Exercise 4c
-cas.decisionTree.forestTrain(conn2cas,
-                             table    = list(name = table_name_str, where = '_PartInd_ = 1'),
-                             target   = target_var,
-                             inputs   = input_vars,
-                             nominals = nominal_vars,
-                             nTree    = 100,
-                             casOut   = list(name = 'random_forest_model', replace = TRUE)
-)
+
 
 #### analyse R data frame vs CAS object ####
 # Exercise 4d
 # bring the data to the client so that you can use packages like ggplot2 and xgboost
-cas_crash_df <- to.casDataFrame(castbl_cas_crash)
+
 
 # check the class types of each object
-class(castbl_cas_crash)
-class(cas_crash_df )
+
 
 # check how many  of the rows came through to the client vs how many are in the CAS table object
 dim(castbl_cas_crash)

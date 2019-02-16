@@ -37,7 +37,7 @@ NOTE: To generate the functions with signatures (for tab completion), set
 > castbl_cas_crash <- cas.read.csv(conn2cas, "cas_crash.csv")
 NOTE: Cloud Analytic Services made the uploaded file available as table CAS_CRASH in caslib CASUSER(student).
 > 
-> # in some functions you need to pass the name of the table object not the object itself
+> # in some functions you need to pass the name of the table not the CASTable object
 > table_name_str <- 'cas_crash'
 > #### prep data ####
 > # Exercise 4b
