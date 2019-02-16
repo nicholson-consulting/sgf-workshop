@@ -1,511 +1,915 @@
+1                                                          The SAS System                            23:51 Monday, February 11, 2019
+
 1          ;*';*";*/;quit;run;
 2          OPTIONS PAGENO=MIN;
 3          %LET _CLIENTTASKLABEL='autoexec';
-4          %LET _CLIENTPROJECTPATH='';
-5          %LET _CLIENTPROJECTNAME='';
-6          %LET _SASPROGRAMFILE=;
-7          
-8          ODS _ALL_ CLOSE;
-9          OPTIONS DEV=ACTIVEX;
-10         GOPTIONS XPIXELS=0 YPIXELS=0;
-11         FILENAME EGSR TEMP;
-12         ODS tagsets.sasreport12(ID=EGSR) FILE=EGSR STYLE=Analysis
-12       ! STYLESHEET=(URL="file:///Q:/SASHome/x86/SASEnterpriseGuide/4.3/Styles/Analysis.css") NOGTITLE NOGFOOTNOTE
-12       ! GPATH=&sasworklocation ENCODING=UTF8 options(rolap="on");
-NOTE: Writing TAGSETS.SASREPORT12(EGSR) Body file: EGSR
-13         
-14         GOPTIONS ACCESSIBLE;
-15         /*********************************************************************************************************
-16         DESCRIPTION: setup file to build the sas dataset for the exercises
-17         
-18         INPUT:
-19         in_dir = location where the csv file is located
-20         out_dir = location where the sas dataset will reside
-21         
-22         OUTPUT:
-23         &out_dir..Crash_Analysis_System_CAS_data = crash analysis system sas7bdat file
+4          %LET _CLIENTPROCESSFLOWNAME='Process Flow';
+5          %LET _CLIENTPROJECTPATH='';
+6          %LET _CLIENTPROJECTPATHHOST='';
+7          %LET _CLIENTPROJECTNAME='';
+8          %LET _SASPROGRAMFILE='D:\Workshop\HOW\autoexec.sas';
+9          %LET _SASPROGRAMFILEHOST='SASBAP';
+10         
+11         ODS _ALL_ CLOSE;
+12         OPTIONS DEV=PNG;
+13         GOPTIONS XPIXELS=0 YPIXELS=0;
+14         FILENAME EGSR TEMP;
+15         ODS tagsets.sasreport13(ID=EGSR) FILE=EGSR
+16             STYLE=HTMLBlue
+17             STYLESHEET=(URL="file:///D:/Program%20Files/SASHome/x86/SASEnterpriseGuide/7.1/Styles/HTMLBlue.css")
+18             NOGTITLE
+19             NOGFOOTNOTE
+20             GPATH=&sasworklocation
+21             ENCODING=UTF8
+22             options(rolap="on")
+23         ;
+NOTE: Writing TAGSETS.SASREPORT13(EGSR) Body file: EGSR
 24         
-25         AUTHOR: EW
-26         
-27         DEPENDENCIES:
-28         NA
-29         
-30         NOTES:
-31         Cross reference against one way tables to confirm data has been imported correctly
+25         GOPTIONS ACCESSIBLE;
+26         /*********************************************************************************************************
+27         DESCRIPTION: setup file to build the sas dataset for the exercises
+28         
+29         INPUT:
+30         in_dir = location where the csv file is located
+31         out_lib = location where the sas dataset will reside
 32         
-33         HISTORY:
-34         18 Jan 2019 EW v1
-35         *********************************************************************************************************/
+33         OUTPUT:
+34         &out_lib..cas_crash.sas7bdat = crash analysis system sas7bdat file
+35         &out_lib..cas_crash.csv = crash analysis system csv file (this has the target and a few dropped variables)
 36         
-37         /* setup variables */
-38         %let in_path = /home/&sysuserid.;     /* path to where the csv file is located */
-39         %let out_dir = work;                  /* location where the sas dataset will reside */
-40         
-41         data &out_dir..Crash_Analysis_System_CAS_data;
-42             length
-43                 X                  8
-44                 Y                  8
-45                 OBJECTID           8
-46                 crashYear          8
-47                 crashFinancialYear $ 9
-48                 crashSeverity    $ 1
-49                 fatalCount         8
-50                 seriousInjuryCount   8
-51                 minorInjuryCount   8
-52                 multiVehicle     $ 31
-53                 holiday          $ 18
-54                 regionDesc       $ 18
-2                                                          The SAS System                             10:31 Friday, January 25, 2019
+37         AUTHOR: EW
+38         
+39         DEPENDENCIES:
+40         NA
+41         
+42         NOTES:
+43         Cross reference against one way tables to confirm data has been imported correctly
+44         
+45         HISTORY:
+46         12 Feb 2019 EW updated after testing on image
+47         18 Jan 2019 EW v1
+48         *********************************************************************************************************/
+49         
+50         /* setup variables */
+51         libname how 'D:\Workshop\HOW';
+NOTE: Libref HOW was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: D:\Workshop\HOW
+52         %let in_path = D:\Workshop\HOW;     /* path to where the csv file is located */
+53         %let out_lib = how;                 /* location where the sas dataset will reside */
+54         
+2                                                          The SAS System                            23:51 Monday, February 11, 2019
 
-55                 tlaID              8
-56                 tlaName          $ 30
-57                 areaUnitID         8
-58                 meshblockID        8
-59                 easting            8
-60                 northing           8
-61                 crashLocation1   $ 25
-62                 crashLocation2   $ 25
-63                 outdatedLocationDescription $ 17
-64                 crashRPRS          8
-65                 intersection     $ 12
-66                 junctionType     $ 15
-67                 cornerRoadSideRoad   8
-68                 crashDirectionDescription $ 5
-69                 crashDistance      8
-70                 crashRPDirectionDescription $ 10
-71                 directionRoleDescription $ 7
-72                 crashRPDisplacement   8
-73                 crashSHDescription $ 3
-74                 crashRPSH        $ 3
-75                 crashRPNewsDescription $ 10
-76                 intersectionMidblock $ 12
-77                 flatHill         $ 7
-78                 roadCharacter    $ 16
-79                 roadCurvature    $ 14
-80                 roadLane         $ 1
-81                 roadMarkings     $ 16
-82                 roadSurface      $ 8
-83                 roadWet          $ 9
-84                 numberOfLanes      8
-85                 trafficControl   $ 14
-86                 speedLimit       $ 3
-87                 advisorySpeed      8
-88                 temporarySpeedLimit   8
-89                 urban            $ 8
-90                 darkLight        $ 7
-91                 light            $ 10
-92                 streetLight      $ 7
-93                 weatherA         $ 10
-94                 weatherB         $ 11
-95                 animals            8
-96                 bridge             8
-97                 cliffBank          8
-98                 debris             8
-99                 ditch              8
-100                fence              8
-101                guardRail          8
-102                houseBuilding      8
-103                kerb               8
-104                objectThrownOrDropped   8
-105                other              8
-106                overBank           8
-107                parkedVehicle      8
-108                phoneBoxEtc        8
-109                postOrPole         8
-110                roadworks          8
-111                slipFlood          8
-112                strayAnimal        8
-3                                                          The SAS System                             10:31 Friday, January 25, 2019
+55         data work.temp;
+56         	length
+57         		X                  8
+58         		Y                  8
+59         		OBJECTID           8
+60         		crashYear          8
+61         		crashFinancialYear $ 9
+62         		crashSeverity    $ 1
+63         		fatalCount         8
+64         		seriousInjuryCount   8
+65         		minorInjuryCount   8
+66         		multiVehicle     $ 31
+67         		holiday          $ 18
+68         		regionDesc       $ 18
+69         		tlaID              8
+70         		tlaName          $ 30
+71         		areaUnitID         8
+72         		meshblockID        8
+73         		easting            8
+74         		northing           8
+75         		crashLocation1   $ 25
+76         		crashLocation2   $ 25
+77         		outdatedLocationDescription $ 17
+78         		crashRPRS          8
+79         		intersection     $ 12
+80         		junctionType     $ 15
+81         		cornerRoadSideRoad   8
+82         		crashDirectionDescription $ 5
+83         		crashDistance      8
+84         		crashRPDirectionDescription $ 10
+85         		directionRoleDescription $ 7
+86         		crashRPDisplacement   8
+87         		crashSHDescription $ 3
+88         		crashRPSH        $ 3
+89         		crashRPNewsDescription $ 10
+90         		intersectionMidblock $ 12
+91         		flatHill         $ 7
+92         		roadCharacter    $ 16
+93         		roadCurvature    $ 14
+94         		roadLane         $ 1
+95         		roadMarkings     $ 16
+96         		roadSurface      $ 8
+97         		roadWet          $ 9
+98         		numberOfLanes      8
+99         		trafficControl   $ 14
+100        		speedLimit       $ 3
+101        		advisorySpeed      8
+102        		temporarySpeedLimit   8
+103        		urban            $ 8
+104        		darkLight        $ 7
+105        		light            $ 10
+106        		streetLight      $ 7
+107        		weatherA         $ 10
+108        		weatherB         $ 11
+109        		animals            8
+110        		bridge             8
+111        		cliffBank          8
+112        		debris             8
+3                                                          The SAS System                            23:51 Monday, February 11, 2019
 
-113                trafficIsland      8
-114                trafficSign        8
-115                train              8
-116                tree               8
-117                vehicle            8
-118                waterRiver         8
-119                bicycle            8
-120                bus                8
-121                carStationWagon    8
-122                moped              8
-123                motorcycle         8
-124                otherVehicleType   8
-125                schoolBus          8
-126                suv                8
-127                taxi               8
-128                truck              8
-129                unknownVehicleType   8
-130                vanOrUtility       8
-131                Pedestrian         8 ;
-132            format
-133                X                BEST19.
-134                Y                BEST19.
-135                OBJECTID         BEST6.
-136                crashYear        BEST4.
-137                crashFinancialYear $CHAR9.
-138                crashSeverity    $CHAR1.
-139                fatalCount       BEST1.
-140                seriousInjuryCount BEST2.
-141                minorInjuryCount BEST2.
-142                multiVehicle     $CHAR31.
-143                holiday          $CHAR18.
-144                regionDesc       $CHAR18.
-145                tlaID            BEST2.
-146                tlaName          $CHAR30.
-147                areaUnitID       BEST6.
-148                meshblockID      BEST7.
-149                easting          BEST7.
-150                northing         BEST7.
-151                crashLocation1   $CHAR25.
-152                crashLocation2   $CHAR25.
-153                outdatedLocationDescription $CHAR17.
-154                crashRPRS        BEST4.
-155                intersection     $CHAR12.
-156                junctionType     $CHAR15.
-157                cornerRoadSideRoad BEST1.
-158                crashDirectionDescription $CHAR5.
-159                crashDistance    BEST5.
-160                crashRPDirectionDescription $CHAR10.
-161                directionRoleDescription $CHAR7.
-162                crashRPDisplacement BEST5.
-163                crashSHDescription $CHAR3.
-164                crashRPSH        $CHAR3.
-165                crashRPNewsDescription $CHAR10.
-166                intersectionMidblock $CHAR12.
-167                flatHill         $CHAR7.
-168                roadCharacter    $CHAR16.
-169                roadCurvature    $CHAR14.
-170                roadLane         $CHAR1.
-4                                                          The SAS System                             10:31 Friday, January 25, 2019
+113        		ditch              8
+114        		fence              8
+115        		guardRail          8
+116        		houseBuilding      8
+117        		kerb               8
+118        		objectThrownOrDropped   8
+119        		other              8
+120        		overBank           8
+121        		parkedVehicle      8
+122        		phoneBoxEtc        8
+123        		postOrPole         8
+124        		roadworks          8
+125        		slipFlood          8
+126        		strayAnimal        8
+127        		trafficIsland      8
+128        		trafficSign        8
+129        		train              8
+130        		tree               8
+131        		vehicle            8
+132        		waterRiver         8
+133        		bicycle            8
+134        		bus                8
+135        		carStationWagon    8
+136        		moped              8
+137        		motorcycle         8
+138        		otherVehicleType   8
+139        		schoolBus          8
+140        		suv                8
+141        		taxi               8
+142        		truck              8
+143        		unknownVehicleType   8
+144        		vanOrUtility       8
+145        		Pedestrian         8;
+146        	format
+147        		X                BEST19.
+148        		Y                BEST19.
+149        		OBJECTID         BEST6.
+150        		crashYear        BEST4.
+151        		crashFinancialYear $CHAR9.
+152        		crashSeverity    $CHAR1.
+153        		fatalCount       BEST1.
+154        		seriousInjuryCount BEST2.
+155        		minorInjuryCount BEST2.
+156        		multiVehicle     $CHAR31.
+157        		holiday          $CHAR18.
+158        		regionDesc       $CHAR18.
+159        		tlaID            BEST2.
+160        		tlaName          $CHAR30.
+161        		areaUnitID       BEST6.
+162        		meshblockID      BEST7.
+163        		easting          BEST7.
+164        		northing         BEST7.
+165        		crashLocation1   $CHAR25.
+166        		crashLocation2   $CHAR25.
+167        		outdatedLocationDescription $CHAR17.
+168        		crashRPRS        BEST4.
+169        		intersection     $CHAR12.
+170        		junctionType     $CHAR15.
+4                                                          The SAS System                            23:51 Monday, February 11, 2019
 
-171                roadMarkings     $CHAR16.
-172                roadSurface      $CHAR8.
-173                roadWet          $CHAR9.
-174                numberOfLanes    BEST1.
-175                trafficControl   $CHAR14.
-176                speedLimit       $CHAR3.
-177                advisorySpeed    BEST2.
-178                temporarySpeedLimit BEST2.
-179                urban            $CHAR8.
-180                darkLight        $CHAR7.
-181                light            $CHAR10.
-182                streetLight      $CHAR7.
-183                weatherA         $CHAR10.
-184                weatherB         $CHAR11.
-185                animals          BEST1.
-186                bridge           BEST1.
-187                cliffBank        BEST1.
-188                debris           BEST1.
-189                ditch            BEST1.
-190                fence            BEST1.
-191                guardRail        BEST1.
-192                houseBuilding    BEST1.
-193                kerb             BEST1.
-194                objectThrownOrDropped BEST1.
-195                other            BEST1.
-196                overBank         BEST1.
-197                parkedVehicle    BEST1.
-198                phoneBoxEtc      BEST1.
-199                postOrPole       BEST1.
-200                roadworks        BEST1.
-201                slipFlood        BEST1.
-202                strayAnimal      BEST1.
-203                trafficIsland    BEST1.
-204                trafficSign      BEST1.
-205                train            BEST1.
-206                tree             BEST1.
-207                vehicle          BEST1.
-208                waterRiver       BEST1.
-209                bicycle          BEST1.
-210                bus              BEST1.
-211                carStationWagon  BEST2.
-212                moped            BEST1.
-213                motorcycle       BEST1.
-214                otherVehicleType BEST1.
-215                schoolBus        BEST1.
-216                suv              BEST1.
-217                taxi             BEST1.
-218                truck            BEST1.
-219                unknownVehicleType BEST1.
-220                vanOrUtility     BEST1.
-221                Pedestrian       BEST1. ;
-222            informat
-223                X                BEST19.
-224                Y                BEST19.
-225                OBJECTID         BEST6.
-226                crashYear        BEST4.
-227                crashFinancialYear $CHAR9.
-228                crashSeverity    $CHAR1.
-5                                                          The SAS System                             10:31 Friday, January 25, 2019
+171        		cornerRoadSideRoad BEST1.
+172        		crashDirectionDescription $CHAR5.
+173        		crashDistance    BEST5.
+174        		crashRPDirectionDescription $CHAR10.
+175        		directionRoleDescription $CHAR7.
+176        		crashRPDisplacement BEST5.
+177        		crashSHDescription $CHAR3.
+178        		crashRPSH        $CHAR3.
+179        		crashRPNewsDescription $CHAR10.
+180        		intersectionMidblock $CHAR12.
+181        		flatHill         $CHAR7.
+182        		roadCharacter    $CHAR16.
+183        		roadCurvature    $CHAR14.
+184        		roadLane         $CHAR1.
+185        		roadMarkings     $CHAR16.
+186        		roadSurface      $CHAR8.
+187        		roadWet          $CHAR9.
+188        		numberOfLanes    BEST1.
+189        		trafficControl   $CHAR14.
+190        		speedLimit       $CHAR3.
+191        		advisorySpeed    BEST2.
+192        		temporarySpeedLimit BEST2.
+193        		urban            $CHAR8.
+194        		darkLight        $CHAR7.
+195        		light            $CHAR10.
+196        		streetLight      $CHAR7.
+197        		weatherA         $CHAR10.
+198        		weatherB         $CHAR11.
+199        		animals          BEST1.
+200        		bridge           BEST1.
+201        		cliffBank        BEST1.
+202        		debris           BEST1.
+203        		ditch            BEST1.
+204        		fence            BEST1.
+205        		guardRail        BEST1.
+206        		houseBuilding    BEST1.
+207        		kerb             BEST1.
+208        		objectThrownOrDropped BEST1.
+209        		other            BEST1.
+210        		overBank         BEST1.
+211        		parkedVehicle    BEST1.
+212        		phoneBoxEtc      BEST1.
+213        		postOrPole       BEST1.
+214        		roadworks        BEST1.
+215        		slipFlood        BEST1.
+216        		strayAnimal      BEST1.
+217        		trafficIsland    BEST1.
+218        		trafficSign      BEST1.
+219        		train            BEST1.
+220        		tree             BEST1.
+221        		vehicle          BEST1.
+222        		waterRiver       BEST1.
+223        		bicycle          BEST1.
+224        		bus              BEST1.
+225        		carStationWagon  BEST2.
+226        		moped            BEST1.
+227        		motorcycle       BEST1.
+228        		otherVehicleType BEST1.
+5                                                          The SAS System                            23:51 Monday, February 11, 2019
 
-229                fatalCount       BEST1.
-230                seriousInjuryCount BEST2.
-231                minorInjuryCount BEST2.
-232                multiVehicle     $CHAR31.
-233                holiday          $CHAR18.
-234                regionDesc       $CHAR18.
-235                tlaID            BEST2.
-236                tlaName          $CHAR30.
-237                areaUnitID       BEST6.
-238                meshblockID      BEST7.
-239                easting          BEST7.
-240                northing         BEST7.
-241                crashLocation1   $CHAR25.
-242                crashLocation2   $CHAR25.
-243                outdatedLocationDescription $CHAR17.
-244                crashRPRS        BEST4.
-245                intersection     $CHAR12.
-246                junctionType     $CHAR15.
-247                cornerRoadSideRoad BEST1.
-248                crashDirectionDescription $CHAR5.
-249                crashDistance    BEST5.
-250                crashRPDirectionDescription $CHAR10.
-251                directionRoleDescription $CHAR7.
-252                crashRPDisplacement BEST5.
-253                crashSHDescription $CHAR3.
-254                crashRPSH        $CHAR3.
-255                crashRPNewsDescription $CHAR10.
-256                intersectionMidblock $CHAR12.
-257                flatHill         $CHAR7.
-258                roadCharacter    $CHAR16.
-259                roadCurvature    $CHAR14.
-260                roadLane         $CHAR1.
-261                roadMarkings     $CHAR16.
-262                roadSurface      $CHAR8.
-263                roadWet          $CHAR9.
-264                numberOfLanes    BEST1.
-265                trafficControl   $CHAR14.
-266                speedLimit       $CHAR3.
-267                advisorySpeed    BEST2.
-268                temporarySpeedLimit BEST2.
-269                urban            $CHAR8.
-270                darkLight        $CHAR7.
-271                light            $CHAR10.
-272                streetLight      $CHAR7.
-273                weatherA         $CHAR10.
-274                weatherB         $CHAR11.
-275                animals          BEST1.
-276                bridge           BEST1.
-277                cliffBank        BEST1.
-278                debris           BEST1.
-279                ditch            BEST1.
-280                fence            BEST1.
-281                guardRail        BEST1.
-282                houseBuilding    BEST1.
-283                kerb             BEST1.
-284                objectThrownOrDropped BEST1.
-285                other            BEST1.
-286                overBank         BEST1.
-6                                                          The SAS System                             10:31 Friday, January 25, 2019
+229        		schoolBus        BEST1.
+230        		suv              BEST1.
+231        		taxi             BEST1.
+232        		truck            BEST1.
+233        		unknownVehicleType BEST1.
+234        		vanOrUtility     BEST1.
+235        		Pedestrian       BEST1.;
+236        	informat
+237        		X                BEST19.
+238        		Y                BEST19.
+239        		OBJECTID         BEST6.
+240        		crashYear        BEST4.
+241        		crashFinancialYear $CHAR9.
+242        		crashSeverity    $CHAR1.
+243        		fatalCount       BEST1.
+244        		seriousInjuryCount BEST2.
+245        		minorInjuryCount BEST2.
+246        		multiVehicle     $CHAR31.
+247        		holiday          $CHAR18.
+248        		regionDesc       $CHAR18.
+249        		tlaID            BEST2.
+250        		tlaName          $CHAR30.
+251        		areaUnitID       BEST6.
+252        		meshblockID      BEST7.
+253        		easting          BEST7.
+254        		northing         BEST7.
+255        		crashLocation1   $CHAR25.
+256        		crashLocation2   $CHAR25.
+257        		outdatedLocationDescription $CHAR17.
+258        		crashRPRS        BEST4.
+259        		intersection     $CHAR12.
+260        		junctionType     $CHAR15.
+261        		cornerRoadSideRoad BEST1.
+262        		crashDirectionDescription $CHAR5.
+263        		crashDistance    BEST5.
+264        		crashRPDirectionDescription $CHAR10.
+265        		directionRoleDescription $CHAR7.
+266        		crashRPDisplacement BEST5.
+267        		crashSHDescription $CHAR3.
+268        		crashRPSH        $CHAR3.
+269        		crashRPNewsDescription $CHAR10.
+270        		intersectionMidblock $CHAR12.
+271        		flatHill         $CHAR7.
+272        		roadCharacter    $CHAR16.
+273        		roadCurvature    $CHAR14.
+274        		roadLane         $CHAR1.
+275        		roadMarkings     $CHAR16.
+276        		roadSurface      $CHAR8.
+277        		roadWet          $CHAR9.
+278        		numberOfLanes    BEST1.
+279        		trafficControl   $CHAR14.
+280        		speedLimit       $CHAR3.
+281        		advisorySpeed    BEST2.
+282        		temporarySpeedLimit BEST2.
+283        		urban            $CHAR8.
+284        		darkLight        $CHAR7.
+285        		light            $CHAR10.
+286        		streetLight      $CHAR7.
+6                                                          The SAS System                            23:51 Monday, February 11, 2019
 
-287                parkedVehicle    BEST1.
-288                phoneBoxEtc      BEST1.
-289                postOrPole       BEST1.
-290                roadworks        BEST1.
-291                slipFlood        BEST1.
-292                strayAnimal      BEST1.
-293                trafficIsland    BEST1.
-294                trafficSign      BEST1.
-295                train            BEST1.
-296                tree             BEST1.
-297                vehicle          BEST1.
-298                waterRiver       BEST1.
-299                bicycle          BEST1.
-300                bus              BEST1.
-301                carStationWagon  BEST2.
-302                moped            BEST1.
-303                motorcycle       BEST1.
-304                otherVehicleType BEST1.
-305                schoolBus        BEST1.
-306                suv              BEST1.
-307                taxi             BEST1.
-308                truck            BEST1.
-309                unknownVehicleType BEST1.
-310                vanOrUtility     BEST1.
-311                Pedestrian       BEST1. ;
-312            infile "&in_path./Crash_Analysis_System_CAS_data.csv"
-313                lrecl=520
-314                firstobs=2
-315                encoding="UTF-8"
-316                dlm='2c'x
-317                missover
-318                dsd ;
-319            input
-320                X                : ?? COMMA19.
-321                Y                : ?? COMMA19.
-322                OBJECTID         : ?? BEST6.
-323                crashYear        : ?? BEST4.
-324                crashFinancialYear : $CHAR9.
-325                crashSeverity    : $CHAR1.
-326                fatalCount       : ?? BEST1.
-327                seriousInjuryCount : ?? BEST2.
-328                minorInjuryCount : ?? BEST2.
-329                multiVehicle     : $CHAR31.
-330                holiday          : $CHAR18.
-331                regionDesc       : $CHAR18.
-332                tlaID            : ?? BEST2.
-333                tlaName          : $CHAR30.
-334                areaUnitID       : ?? BEST6.
-335                meshblockID      : ?? BEST7.
-336                easting          : ?? BEST7.
-337                northing         : ?? BEST7.
-338                crashLocation1   : $CHAR25.
-339                crashLocation2   : $CHAR25.
-340                outdatedLocationDescription : $CHAR17.
-341                crashRPRS        : ?? BEST4.
-342                intersection     : $CHAR12.
-343                junctionType     : $CHAR15.
-344                cornerRoadSideRoad : ?? BEST1.
-7                                                          The SAS System                             10:31 Friday, January 25, 2019
+287        		weatherA         $CHAR10.
+288        		weatherB         $CHAR11.
+289        		animals          BEST1.
+290        		bridge           BEST1.
+291        		cliffBank        BEST1.
+292        		debris           BEST1.
+293        		ditch            BEST1.
+294        		fence            BEST1.
+295        		guardRail        BEST1.
+296        		houseBuilding    BEST1.
+297        		kerb             BEST1.
+298        		objectThrownOrDropped BEST1.
+299        		other            BEST1.
+300        		overBank         BEST1.
+301        		parkedVehicle    BEST1.
+302        		phoneBoxEtc      BEST1.
+303        		postOrPole       BEST1.
+304        		roadworks        BEST1.
+305        		slipFlood        BEST1.
+306        		strayAnimal      BEST1.
+307        		trafficIsland    BEST1.
+308        		trafficSign      BEST1.
+309        		train            BEST1.
+310        		tree             BEST1.
+311        		vehicle          BEST1.
+312        		waterRiver       BEST1.
+313        		bicycle          BEST1.
+314        		bus              BEST1.
+315        		carStationWagon  BEST2.
+316        		moped            BEST1.
+317        		motorcycle       BEST1.
+318        		otherVehicleType BEST1.
+319        		schoolBus        BEST1.
+320        		suv              BEST1.
+321        		taxi             BEST1.
+322        		truck            BEST1.
+323        		unknownVehicleType BEST1.
+324        		vanOrUtility     BEST1.
+325        		Pedestrian       BEST1.;
+326        	infile "&in_path./Crash_Analysis_System_CAS_data.csv"
+327        		lrecl=520
+328        		firstobs=2
+329        		encoding="UTF-8"
+330        		dlm='2c'x
+331        		missover
+332        		dsd;
+333        	input
+334        		X                : ?? COMMA19.
+335        		Y                : ?? COMMA19.
+336        		OBJECTID         : ?? BEST6.
+337        		crashYear        : ?? BEST4.
+338        		crashFinancialYear : $CHAR9.
+339        		crashSeverity    : $CHAR1.
+340        		fatalCount       : ?? BEST1.
+341        		seriousInjuryCount : ?? BEST2.
+342        		minorInjuryCount : ?? BEST2.
+343        		multiVehicle     : $CHAR31.
+344        		holiday          : $CHAR18.
+7                                                          The SAS System                            23:51 Monday, February 11, 2019
 
-345                crashDirectionDescription : $CHAR5.
-346                crashDistance    : ?? BEST5.
-347                crashRPDirectionDescription : $CHAR10.
-348                directionRoleDescription : $CHAR7.
-349                crashRPDisplacement : ?? BEST5.
-350                crashSHDescription : $CHAR3.
-351                crashRPSH        : $CHAR3.
-352                crashRPNewsDescription : $CHAR10.
-353                intersectionMidblock : $CHAR12.
-354                flatHill         : $CHAR7.
-355                roadCharacter    : $CHAR16.
-356                roadCurvature    : $CHAR14.
-357                roadLane         : $CHAR1.
-358                roadMarkings     : $CHAR16.
-359                roadSurface      : $CHAR8.
-360                roadWet          : $CHAR9.
-361                numberOfLanes    : ?? BEST1.
-362                trafficControl   : $CHAR14.
-363                speedLimit       : $CHAR3.
-364                advisorySpeed    : ?? BEST2.
-365                temporarySpeedLimit : ?? BEST2.
-366                urban            : $CHAR8.
-367                darkLight        : $CHAR7.
-368                light            : $CHAR10.
-369                streetLight      : $CHAR7.
-370                weatherA         : $CHAR10.
-371                weatherB         : $CHAR11.
-372                animals          : ?? BEST1.
-373                bridge           : ?? BEST1.
-374                cliffBank        : ?? BEST1.
-375                debris           : ?? BEST1.
-376                ditch            : ?? BEST1.
-377                fence            : ?? BEST1.
-378                guardRail        : ?? BEST1.
-379                houseBuilding    : ?? BEST1.
-380                kerb             : ?? BEST1.
-381                objectThrownOrDropped : ?? BEST1.
-382                other            : ?? BEST1.
-383                overBank         : ?? BEST1.
-384                parkedVehicle    : ?? BEST1.
-385                phoneBoxEtc      : ?? BEST1.
-386                postOrPole       : ?? BEST1.
-387                roadworks        : ?? BEST1.
-388                slipFlood        : ?? BEST1.
-389                strayAnimal      : ?? BEST1.
-390                trafficIsland    : ?? BEST1.
-391                trafficSign      : ?? BEST1.
-392                train            : ?? BEST1.
-393                tree             : ?? BEST1.
-394                vehicle          : ?? BEST1.
-395                waterRiver       : ?? BEST1.
-396                bicycle          : ?? BEST1.
-397                bus              : ?? BEST1.
-398                carStationWagon  : ?? BEST2.
-399                moped            : ?? BEST1.
-400                motorcycle       : ?? BEST1.
-401                otherVehicleType : ?? BEST1.
-402                schoolBus        : ?? BEST1.
-8                                                          The SAS System                             10:31 Friday, January 25, 2019
+345        		regionDesc       : $CHAR18.
+346        		tlaID            : ?? BEST2.
+347        		tlaName          : $CHAR30.
+348        		areaUnitID       : ?? BEST6.
+349        		meshblockID      : ?? BEST7.
+350        		easting          : ?? BEST7.
+351        		northing         : ?? BEST7.
+352        		crashLocation1   : $CHAR25.
+353        		crashLocation2   : $CHAR25.
+354        		outdatedLocationDescription : $CHAR17.
+355        		crashRPRS        : ?? BEST4.
+356        		intersection     : $CHAR12.
+357        		junctionType     : $CHAR15.
+358        		cornerRoadSideRoad : ?? BEST1.
+359        		crashDirectionDescription : $CHAR5.
+360        		crashDistance    : ?? BEST5.
+361        		crashRPDirectionDescription : $CHAR10.
+362        		directionRoleDescription : $CHAR7.
+363        		crashRPDisplacement : ?? BEST5.
+364        		crashSHDescription : $CHAR3.
+365        		crashRPSH        : $CHAR3.
+366        		crashRPNewsDescription : $CHAR10.
+367        		intersectionMidblock : $CHAR12.
+368        		flatHill         : $CHAR7.
+369        		roadCharacter    : $CHAR16.
+370        		roadCurvature    : $CHAR14.
+371        		roadLane         : $CHAR1.
+372        		roadMarkings     : $CHAR16.
+373        		roadSurface      : $CHAR8.
+374        		roadWet          : $CHAR9.
+375        		numberOfLanes    : ?? BEST1.
+376        		trafficControl   : $CHAR14.
+377        		speedLimit       : $CHAR3.
+378        		advisorySpeed    : ?? BEST2.
+379        		temporarySpeedLimit : ?? BEST2.
+380        		urban            : $CHAR8.
+381        		darkLight        : $CHAR7.
+382        		light            : $CHAR10.
+383        		streetLight      : $CHAR7.
+384        		weatherA         : $CHAR10.
+385        		weatherB         : $CHAR11.
+386        		animals          : ?? BEST1.
+387        		bridge           : ?? BEST1.
+388        		cliffBank        : ?? BEST1.
+389        		debris           : ?? BEST1.
+390        		ditch            : ?? BEST1.
+391        		fence            : ?? BEST1.
+392        		guardRail        : ?? BEST1.
+393        		houseBuilding    : ?? BEST1.
+394        		kerb             : ?? BEST1.
+395        		objectThrownOrDropped : ?? BEST1.
+396        		other            : ?? BEST1.
+397        		overBank         : ?? BEST1.
+398        		parkedVehicle    : ?? BEST1.
+399        		phoneBoxEtc      : ?? BEST1.
+400        		postOrPole       : ?? BEST1.
+401        		roadworks        : ?? BEST1.
+402        		slipFlood        : ?? BEST1.
+8                                                          The SAS System                            23:51 Monday, February 11, 2019
 
-403                suv              : ?? BEST1.
-404                taxi             : ?? BEST1.
-405                truck            : ?? BEST1.
-406                unknownVehicleType : ?? BEST1.
-407                vanOrUtility     : ?? BEST1.
-408                Pedestrian       : ?? BEST1. ;
-409        run;
+403        		strayAnimal      : ?? BEST1.
+404        		trafficIsland    : ?? BEST1.
+405        		trafficSign      : ?? BEST1.
+406        		train            : ?? BEST1.
+407        		tree             : ?? BEST1.
+408        		vehicle          : ?? BEST1.
+409        		waterRiver       : ?? BEST1.
+410        		bicycle          : ?? BEST1.
+411        		bus              : ?? BEST1.
+412        		carStationWagon  : ?? BEST2.
+413        		moped            : ?? BEST1.
+414        		motorcycle       : ?? BEST1.
+415        		otherVehicleType : ?? BEST1.
+416        		schoolBus        : ?? BEST1.
+417        		suv              : ?? BEST1.
+418        		taxi             : ?? BEST1.
+419        		truck            : ?? BEST1.
+420        		unknownVehicleType : ?? BEST1.
+421        		vanOrUtility     : ?? BEST1.
+422        		Pedestrian       : ?? BEST1.;
+423        run;
 
-NOTE: The infile "/home/********/Crash_Analysis_System_CAS_data.csv" is:
-      Filename=/home/********/Crash_Analysis_System_CAS_data.csv,
-      Owner Name=********,Group Name=************,
-      Access Permission=rw-r-----,
-      Last Modified=Fri Jan 25 07:35:49 2019,
-      File Size (bytes)=299239564
+NOTE: The infile "D:\Workshop\HOW/Crash_Analysis_System_CAS_data.csv" is:
+      Filename=D:\Workshop\HOW\Crash_Analysis_System_CAS_data.csv,
+      RECFM=V,LRECL=2080,File Size (bytes)=299239564,
+      Last Modified=11Feb2019:14:41:13,
+      Create Time=11Feb2019:18:48:01
 
-NOTE: 665847 records were read from the infile "/home/********/Crash_Analysis_System_CAS_data.csv".
+NOTE: 665847 records were read from the infile "D:\Workshop\HOW/Crash_Analysis_System_CAS_data.csv".
       The minimum record length was 403.
       The maximum record length was 514.
-NOTE: The data set WORK.CRASH_ANALYSIS_SYSTEM_CAS_DATA has 665847 observations and 89 variables.
-NOTE: Compressing data set WORK.CRASH_ANALYSIS_SYSTEM_CAS_DATA decreased size by 55.27 percent. 
-      Compressed is 6206 pages; un-compressed would require 13873 pages.
+NOTE: The data set WORK.TEMP has 665847 observations and 89 variables.
 NOTE: DATA statement used (Total process time):
-      real time           12.48 seconds
-      cpu time            12.02 seconds
+      real time           5.16 seconds
+      cpu time            5.15 seconds
       
 
-410        
-411        /* check that you get consistent results as the html output */
-412        proc freq data = &out_dir..Crash_Analysis_System_CAS_data
-413        	order = internal
-414        ;
-415        	tables bridge /  scores = table;
-416        	tables cliffbank /  scores = table;
-417        	tables debris /  scores = table;
-418        	tables ditch /  scores = table;
-419        	tables fence /  scores = table;
-420        	tables guardrail /  scores = table;
-421        	tables housebuilding /  scores = table;
-422        	tables kerb /  scores = table;
-423        	tables objectthrownordropped /  scores = table;
-424        	tables other /  scores = table;
-425        	tables overbank /  scores = table;
-426        	tables parkedvehicle /  scores = table;
-427        	tables phoneboxetc /  scores = table;
-428        	tables postorpole /  scores = table;
-429        	tables roadworks /  scores = table;
-430        	tables slipflood /  scores = table;
-431        	tables strayanimal /  scores = table;
-432        	tables trafficisland /  scores = table;
-433        	tables trafficsign /  scores = table;
-434        	tables train /  scores = table;
-435        	tables tree /  scores = table;
-436        	tables vehicle /  scores = table;
-437        	tables waterriver /  scores = table;
-438        	tables bicycle /  scores = table;
-439        	tables bus /  scores = table;
-440        	tables carstationwagon /  scores = table;
-441        	tables moped /  scores = table;
-9                                                          The SAS System                             10:31 Friday, January 25, 2019
+424        
+425        
+426        /* make sure the variables perfectly correlated with the target are removed along with
+427        any ids and geographic info such as latitude and longitude */
+428        data &out_lib..cas_crash (drop = crashSeverity fatalcount seriousinjurycount minorinjurycount
+429        x y easting northing crashlocation1 crashlocation2 outdatedlocationdescription
+430        crashyear crashfinancialyear areaunitid meshblockid tlaid);
+431        	set work.temp;
+432        
+433        	if(crashSeverity in ('F','S')) then
+434        		target = 1; else target = 0;
+435        run;
 
-442        	tables motorcycle /  scores = table;
-443        	tables othervehicletype /  scores = table;
-444        	tables schoolbus /  scores = table;
-445        	tables suv /  scores = table;
-446        	tables taxi /  scores = table;
-447        	tables truck /  scores = table;
-448        	tables unknownvehicletype /  scores = table;
-449        	tables vanorutility /  scores = table;
-450        	tables pedestrian /  scores = table;
-451        run;
+NOTE: There were 665847 observations read from the data set WORK.TEMP.
+NOTE: The data set HOW.CAS_CRASH has 665847 observations and 74 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.74 seconds
+      cpu time            0.73 seconds
+      
 
-NOTE: There were 665847 observations read from the data set WORK.CRASH_ANALYSIS_SYSTEM_CAS_DATA.
+436        
+9                                                          The SAS System                            23:51 Monday, February 11, 2019
+
+437        /* create a new csv version that can be used in the RStudio exercises */
+438        proc export data = how.cas_crash outfile = "&in_path./cas_crash.csv" dbms = csv replace;
+439        run;
+
+NOTE: Unable to open parameter catalog: SASUSER.PARMS.PARMS.SLIST in update mode. Temporary parameter values will be saved to 
+WORK.PARMS.PARMS.SLIST.
+440         /**********************************************************************
+441         *   PRODUCT:   SAS
+442         *   VERSION:   9.4
+443         *   CREATOR:   External File Interface
+444         *   DATE:      11FEB19
+445         *   DESC:      Generated SAS Datastep Code
+446         *   TEMPLATE SOURCE:  (None Specified.)
+447         ***********************************************************************/
+448            data _null_;
+449            %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+450            %let _EFIREC_ = 0;     /* clear export record count macro variable */
+451            file 'D:\Workshop\HOW/cas_crash.csv' delimiter=',' DSD DROPOVER lrecl=32767;
+452            if _n_ = 1 then        /* write column names or labels */
+453             do;
+454               put
+455                  "OBJECTID"
+456               ','
+457                  "multiVehicle"
+458               ','
+459                  "holiday"
+460               ','
+461                  "regionDesc"
+462               ','
+463                  "tlaName"
+464               ','
+465                  "crashRPRS"
+466               ','
+467                  "intersection"
+468               ','
+469                  "junctionType"
+470               ','
+471                  "cornerRoadSideRoad"
+472               ','
+473                  "crashDirectionDescription"
+474               ','
+475                  "crashDistance"
+476               ','
+477                  "crashRPDirectionDescription"
+478               ','
+479                  "directionRoleDescription"
+480               ','
+481                  "crashRPDisplacement"
+482               ','
+483                  "crashSHDescription"
+484               ','
+485                  "crashRPSH"
+486               ','
+487                  "crashRPNewsDescription"
+488               ','
+489                  "intersectionMidblock"
+490               ','
+491                  "flatHill"
+10                                                         The SAS System                            23:51 Monday, February 11, 2019
+
+492               ','
+493                  "roadCharacter"
+494               ','
+495                  "roadCurvature"
+496               ','
+497                  "roadLane"
+498               ','
+499                  "roadMarkings"
+500               ','
+501                  "roadSurface"
+502               ','
+503                  "roadWet"
+504               ','
+505                  "numberOfLanes"
+506               ','
+507                  "trafficControl"
+508               ','
+509                  "speedLimit"
+510               ','
+511                  "advisorySpeed"
+512               ','
+513                  "temporarySpeedLimit"
+514               ','
+515                  "urban"
+516               ','
+517                  "darkLight"
+518               ','
+519                  "light"
+520               ','
+521                  "streetLight"
+522               ','
+523                  "weatherA"
+524               ','
+525                  "weatherB"
+526               ','
+527                  "animals"
+528               ','
+529                  "bridge"
+530               ','
+531                  "cliffBank"
+532               ','
+533                  "debris"
+534               ','
+535                  "ditch"
+536               ','
+537                  "fence"
+538               ','
+539                  "guardRail"
+540               ','
+541                  "houseBuilding"
+542               ','
+543                  "kerb"
+544               ','
+545                  "objectThrownOrDropped"
+546               ','
+547                  "other"
+548               ','
+549                  "overBank"
+11                                                         The SAS System                            23:51 Monday, February 11, 2019
+
+550               ','
+551                  "parkedVehicle"
+552               ','
+553                  "phoneBoxEtc"
+554               ','
+555                  "postOrPole"
+556               ','
+557                  "roadworks"
+558               ','
+559                  "slipFlood"
+560               ','
+561                  "strayAnimal"
+562               ','
+563                  "trafficIsland"
+564               ','
+565                  "trafficSign"
+566               ','
+567                  "train"
+568               ','
+569                  "tree"
+570               ','
+571                  "vehicle"
+572               ','
+573                  "waterRiver"
+574               ','
+575                  "bicycle"
+576               ','
+577                  "bus"
+578               ','
+579                  "carStationWagon"
+580               ','
+581                  "moped"
+582               ','
+583                  "motorcycle"
+584               ','
+585                  "otherVehicleType"
+586               ','
+587                  "schoolBus"
+588               ','
+589                  "suv"
+590               ','
+591                  "taxi"
+592               ','
+593                  "truck"
+594               ','
+595                  "unknownVehicleType"
+596               ','
+597                  "vanOrUtility"
+598               ','
+599                  "Pedestrian"
+600               ','
+601                  "target"
+602               ;
+603             end;
+604           set  HOW.CAS_CRASH   end=EFIEOD;
+605               format OBJECTID best6. ;
+606               format multiVehicle $char31. ;
+607               format holiday $char18. ;
+12                                                         The SAS System                            23:51 Monday, February 11, 2019
+
+608               format regionDesc $char18. ;
+609               format tlaName $char30. ;
+610               format crashRPRS best4. ;
+611               format intersection $char12. ;
+612               format junctionType $char15. ;
+613               format cornerRoadSideRoad best1. ;
+614               format crashDirectionDescription $char5. ;
+615               format crashDistance best5. ;
+616               format crashRPDirectionDescription $char10. ;
+617               format directionRoleDescription $char7. ;
+618               format crashRPDisplacement best5. ;
+619               format crashSHDescription $char3. ;
+620               format crashRPSH $char3. ;
+621               format crashRPNewsDescription $char10. ;
+622               format intersectionMidblock $char12. ;
+623               format flatHill $char7. ;
+624               format roadCharacter $char16. ;
+625               format roadCurvature $char14. ;
+626               format roadLane $char1. ;
+627               format roadMarkings $char16. ;
+628               format roadSurface $char8. ;
+629               format roadWet $char9. ;
+630               format numberOfLanes best1. ;
+631               format trafficControl $char14. ;
+632               format speedLimit $char3. ;
+633               format advisorySpeed best2. ;
+634               format temporarySpeedLimit best2. ;
+635               format urban $char8. ;
+636               format darkLight $char7. ;
+637               format light $char10. ;
+638               format streetLight $char7. ;
+639               format weatherA $char10. ;
+640               format weatherB $char11. ;
+641               format animals best1. ;
+642               format bridge best1. ;
+643               format cliffBank best1. ;
+644               format debris best1. ;
+645               format ditch best1. ;
+646               format fence best1. ;
+647               format guardRail best1. ;
+648               format houseBuilding best1. ;
+649               format kerb best1. ;
+650               format objectThrownOrDropped best1. ;
+651               format other best1. ;
+652               format overBank best1. ;
+653               format parkedVehicle best1. ;
+654               format phoneBoxEtc best1. ;
+655               format postOrPole best1. ;
+656               format roadworks best1. ;
+657               format slipFlood best1. ;
+658               format strayAnimal best1. ;
+659               format trafficIsland best1. ;
+660               format trafficSign best1. ;
+661               format train best1. ;
+662               format tree best1. ;
+663               format vehicle best1. ;
+664               format waterRiver best1. ;
+665               format bicycle best1. ;
+13                                                         The SAS System                            23:51 Monday, February 11, 2019
+
+666               format bus best1. ;
+667               format carStationWagon best2. ;
+668               format moped best1. ;
+669               format motorcycle best1. ;
+670               format otherVehicleType best1. ;
+671               format schoolBus best1. ;
+672               format suv best1. ;
+673               format taxi best1. ;
+674               format truck best1. ;
+675               format unknownVehicleType best1. ;
+676               format vanOrUtility best1. ;
+677               format Pedestrian best1. ;
+678               format target best12. ;
+679             do;
+680               EFIOUT + 1;
+681               put OBJECTID @;
+682               put multiVehicle $ @;
+683               put holiday $ @;
+684               put regionDesc $ @;
+685               put tlaName $ @;
+686               put crashRPRS @;
+687               put intersection $ @;
+688               put junctionType $ @;
+689               put cornerRoadSideRoad @;
+690               put crashDirectionDescription $ @;
+691               put crashDistance @;
+692               put crashRPDirectionDescription $ @;
+693               put directionRoleDescription $ @;
+694               put crashRPDisplacement @;
+695               put crashSHDescription $ @;
+696               put crashRPSH $ @;
+697               put crashRPNewsDescription $ @;
+698               put intersectionMidblock $ @;
+699               put flatHill $ @;
+700               put roadCharacter $ @;
+701               put roadCurvature $ @;
+702               put roadLane $ @;
+703               put roadMarkings $ @;
+704               put roadSurface $ @;
+705               put roadWet $ @;
+706               put numberOfLanes @;
+707               put trafficControl $ @;
+708               put speedLimit $ @;
+709               put advisorySpeed @;
+710               put temporarySpeedLimit @;
+711               put urban $ @;
+712               put darkLight $ @;
+713               put light $ @;
+714               put streetLight $ @;
+715               put weatherA $ @;
+716               put weatherB $ @;
+717               put animals @;
+718               put bridge @;
+719               put cliffBank @;
+720               put debris @;
+721               put ditch @;
+722               put fence @;
+723               put guardRail @;
+14                                                         The SAS System                            23:51 Monday, February 11, 2019
+
+724               put houseBuilding @;
+725               put kerb @;
+726               put objectThrownOrDropped @;
+727               put other @;
+728               put overBank @;
+729               put parkedVehicle @;
+730               put phoneBoxEtc @;
+731               put postOrPole @;
+732               put roadworks @;
+733               put slipFlood @;
+734               put strayAnimal @;
+735               put trafficIsland @;
+736               put trafficSign @;
+737               put train @;
+738               put tree @;
+739               put vehicle @;
+740               put waterRiver @;
+741               put bicycle @;
+742               put bus @;
+743               put carStationWagon @;
+744               put moped @;
+745               put motorcycle @;
+746               put otherVehicleType @;
+747               put schoolBus @;
+748               put suv @;
+749               put taxi @;
+750               put truck @;
+751               put unknownVehicleType @;
+752               put vanOrUtility @;
+753               put Pedestrian @;
+754               put target ;
+755               ;
+756             end;
+757            if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+758            if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+759            run;
+
+NOTE: The file 'D:\Workshop\HOW/cas_crash.csv' is:
+      Filename=D:\Workshop\HOW\cas_crash.csv,
+      RECFM=V,LRECL=32767,File Size (bytes)=0,
+      Last Modified=11Feb2019:23:51:23,
+      Create Time=11Feb2019:23:51:23
+
+NOTE: 665848 records were written to the file 'D:\Workshop\HOW/cas_crash.csv'.
+      The minimum record length was 262.
+      The maximum record length was 866.
+NOTE: There were 665847 observations read from the data set HOW.CAS_CRASH.
+NOTE: DATA statement used (Total process time):
+      real time           4.53 seconds
+      cpu time            4.53 seconds
+      
+
+665847 records created in D:\Workshop\HOW/cas_crash.csv from HOW.CAS_CRASH.
+  
+  
+NOTE: "D:\Workshop\HOW/cas_crash.csv" file was successfully created.
+NOTE: PROCEDURE EXPORT used (Total process time):
+      real time           4.64 seconds
+15                                                         The SAS System                            23:51 Monday, February 11, 2019
+
+      cpu time            4.65 seconds
+      
+
+760        
+761        /* check that you get consistent results as the html output */
+762        proc freq data = &out_lib..cas_crash
+763        	order = internal
+764        ;
+765            tables target / scores =  table;
+766        	tables bridge /  scores = table;
+767        	tables cliffbank /  scores = table;
+768        	tables debris /  scores = table;
+769        	tables ditch /  scores = table;
+770        	tables fence /  scores = table;
+771        	tables guardrail /  scores = table;
+772        	tables housebuilding /  scores = table;
+773        	tables kerb /  scores = table;
+774        	tables objectthrownordropped /  scores = table;
+775        	tables other /  scores = table;
+776        	tables overbank /  scores = table;
+777        	tables parkedvehicle /  scores = table;
+778        	tables phoneboxetc /  scores = table;
+779        	tables postorpole /  scores = table;
+780        	tables roadworks /  scores = table;
+781        	tables slipflood /  scores = table;
+782        	tables strayanimal /  scores = table;
+783        	tables trafficisland /  scores = table;
+784        	tables trafficsign /  scores = table;
+785        	tables train /  scores = table;
+786        	tables tree /  scores = table;
+787        	tables vehicle /  scores = table;
+788        	tables waterriver /  scores = table;
+789        	tables bicycle /  scores = table;
+790        	tables bus /  scores = table;
+791        	tables carstationwagon /  scores = table;
+792        	tables moped /  scores = table;
+793        	tables motorcycle /  scores = table;
+794        	tables othervehicletype /  scores = table;
+795        	tables schoolbus /  scores = table;
+796        	tables suv /  scores = table;
+797        	tables taxi /  scores = table;
+798        	tables truck /  scores = table;
+799        	tables unknownvehicletype /  scores = table;
+800        	tables vanorutility /  scores = table;
+801        	tables pedestrian /  scores = table;
+802        run;
+
+NOTE: There were 665847 observations read from the data set HOW.CAS_CRASH.
 NOTE: PROCEDURE FREQ used (Total process time):
-      real time           2.32 seconds
-      cpu time            2.27 seconds
+      real time           0.84 seconds
+      cpu time            0.85 seconds
       
 
-452        
-453        
-454        
-455        GOPTIONS NOACCESSIBLE;
-456        %LET _CLIENTTASKLABEL=;
-457        %LET _CLIENTPROJECTPATH=;
-458        %LET _CLIENTPROJECTNAME=;
-459        %LET _SASPROGRAMFILE=;
-460        
-461        ;*';*";*/;quit;run;
-462        ODS _ALL_ CLOSE;
-463        
-464        
-465        QUIT; RUN;
-466        
+803        
+804        
+805        
+806        GOPTIONS NOACCESSIBLE;
+807        %LET _CLIENTTASKLABEL=;
+16                                                         The SAS System                            23:51 Monday, February 11, 2019
+
+808        %LET _CLIENTPROCESSFLOWNAME=;
+809        %LET _CLIENTPROJECTPATH=;
+810        %LET _CLIENTPROJECTPATHHOST=;
+811        %LET _CLIENTPROJECTNAME=;
+812        %LET _SASPROGRAMFILE=;
+813        %LET _SASPROGRAMFILEHOST=;
+814        
+815        ;*';*";*/;quit;run;
+816        ODS _ALL_ CLOSE;
+817        
+818        
+819        QUIT; RUN;
+820        
