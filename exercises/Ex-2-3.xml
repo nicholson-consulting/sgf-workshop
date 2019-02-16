@@ -18,16 +18,16 @@ library(randomForest)
 set.seed(12345) 
 # hyper tuning the parameters has been ignored so that we can quickly get results in the time of the HOW
 
-&amp;EMR_MODEL &lt;- randomForest(&amp;EMR_CLASS_TARGET ~ &amp;EMR_CLASS_INPUT + &amp;EMR_NUM_INPUT, 
+&amp;XXXXMODELXXXX &lt;- randomForest(&amp;XXXXTARGETXXXX ~ &amp;XXXXCHARINPUTXXXX + &amp;XXXXNUMINPUTXXXX, 
 ntree=100, mtry=3, maxnodes=50,
-data=&amp;EMR_IMPORT_DATA, importance=TRUE) 
+data=&amp;XXXXDATAXXXX, importance=TRUE) 
 
 # this can be viewed in the EM results under the output window 
-importance(&amp;EMR_MODEL) 
+importance(&amp;XXXXMODELXXXX) 
 
 # create predictions that can be compared within EM
-&amp;EMR_EXPORT_TRAIN &lt;- predict(&amp;EMR_MODEL, &amp;EMR_IMPORT_DATA, type=&quot;prob&quot;) 
-&amp;EMR_EXPORT_VALIDATE &lt;- predict(&amp;EMR_MODEL, &amp;EMR_IMPORT_VALIDATE, type=&quot;prob&quot;)
+&amp;XXXXTRAINXXXX &lt;- predict(&amp;XXXXMODELXXXX, &amp;XXXXIMPORTXXXX, type=&quot;prob&quot;) 
+&amp;XXXXVALIDATEXXXX &lt;- predict(&amp;XXXXMODELXXXX, &amp;XXXXIMPORTXXXX type=&quot;prob&quot;)
  
 ]]>
 </Data>
