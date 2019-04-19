@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><_ROOT_ EMVERSION="14.2" ORIENTATION="HORIZONTAL">
+<?xml version="1.0" encoding="UTF-8"?><_ROOT_ EMVERSION="14.3" ORIENTATION="HORIZONTAL">
 <Workspace>
 <NODES>
-<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="EMOPEN" ID="EMOPEN" X="1344" Y="102" DESCRIPTION="R randomForest" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODEL" TOOLPREFIX="EMOPEN">
+<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="EMOPEN" ID="EMOPEN" X="1362" Y="102" DESCRIPTION="R randomForest" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODEL" TOOLPREFIX="EMOPEN">
 <PROPERTIES Location="CATALOG" Catalog="SASHELP.EMUTIL.Em_open.SOURCE" TRAINMODE="SUPERVISED" LANGUAGE="R" R_OUTPUT="PMML" ForceRun="N" RunAction="Train" Component="EMOPEN" EDITOR="">
 <VariableProperties/>
 <EmTargetAttributes/>
@@ -13,21 +13,22 @@
 <SUBMIT Type="EXTERNAL" Extension="txt">
 <Data><![CDATA[
 # there are faster packages but this is for illustrative purposes
-library(randomForest) 
+library(randomForest)
  
-set.seed(12345) 
+set.seed(12345)
 # hyper tuning the parameters has been ignored so that we can quickly get results in the time of the HOW
-
-&amp;XXXXMODELXXXX &lt;- randomForest(&amp;XXXXTARGETXXXX ~ &amp;XXXXCHARINPUTXXXX + &amp;XXXXNUMINPUTXXXX, 
+ 
+&amp;XXXXMODELXXXX &lt;- randomForest(&amp;XXXXTARGETXXXX ~ &amp;XXXXCHARINPUTXXXX + &amp;XXXXNUMINPUTXXXX,
 ntree=100, mtry=3, maxnodes=50,
-data=&amp;XXXXDATAXXXX, importance=TRUE) 
-
-# this can be viewed in the EM results under the output window 
-importance(&amp;XXXXMODELXXXX) 
-
+data=&amp;XXXXDATAXXXX, importance=TRUE)
+ 
+# this can be viewed in the EM results under the output window
+importance(&amp;XXXXMODELXXXX)
+ 
 # create predictions that can be compared within EM
-&amp;XXXXTRAINXXXX &lt;- predict(&amp;XXXXMODELXXXX, &amp;XXXXIMPORTXXXX, type=&quot;prob&quot;) 
+&amp;XXXXTRAINXXXX &lt;- predict(&amp;XXXXMODELXXXX, &amp;XXXXIMPORTXXXX, type=&quot;prob&quot;)
 &amp;XXXXVALIDATEXXXX &lt;- predict(&amp;XXXXMODELXXXX, &amp;XXXXIMPORTXXXX type=&quot;prob&quot;)
+ 
  
 ]]>
 </Data>
@@ -38,7 +39,7 @@ importance(&amp;XXXXMODELXXXX)
 </EmFileProperties>
 </PROPERTIES>
 </NODE>
-<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="HPDMForest" ID="HPDMForest" X="971" Y="200" DESCRIPTION="HPDMForest" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODEL" TOOLPREFIX="HPDMForest">
+<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="HPDMForest" ID="HPDMForest" X="989" Y="200" DESCRIPTION="HPDMForest" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODEL" TOOLPREFIX="HPDMForest">
 <PROPERTIES Location="CATALOG" Catalog="SASHELP.HPDM.HPDMForest.SOURCE" ToolType="MODEL" ALPHA="0.05" CATBINS="30" EXHAUSTIVE="5000" LEAFSIZEMETHOD="DEFAULT" LEAFFRACTION="0.00001" LEAFSIZE="1" MAXDEPTH="50" MAXTREES="100" MINCATSIZE="5" SEED="12345" SPLITSIZE="." NUMOBSMETHOD="PERCENTAGE" TRAINFRACTION="0.6" TRAINN="." VARS_TO_TRY="." MISSING="USEINSEARCH" MINUSEINSEARCH="1" MODELING="Y" VARSELECT="Y" VIMETHOD="LOSSREDUCTION" RBATOPNUM="25" RBACUT="0.01" ForceRun="N" RunAction="Train" Component="HPDMForest">
 <VariableProperties/>
 <EmTargetAttributes/>
@@ -52,8 +53,8 @@ importance(&amp;XXXXMODELXXXX)
 </EmFileProperties>
 </PROPERTIES>
 </NODE>
-<NODE CLASS="SASHELP.EMSAMP.IDS.CLASS" COMPONENT="DataSource" ID="Ids" X="179" Y="101" DESCRIPTION="CAS_CRASH" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="SAMPLE" TOOLPREFIX="Ids">
-<PROPERTIES DataSource="cascrash" Scope="LOCAL" Role="RAW" Library="HOW" Table="CAS_CRASH" NCols="74" NObs="674324" NBytes="465241088" Segment="" DataSourceRole="RAW" OutputType="VIEW" ForceRun="N" ComputeStatistics="N" DataSelection="DATASOURCE" NewTable="" MetaAdvisor="BASIC" ApplyIntervalLevelLowerLimit="Y" IntervalLowerLimit="20" ApplyMaxPercentMissing="Y" MaxPercentMissing="50" ApplyMaxClassLevels="Y" MaxClassLevels="20" IdentifyEmptyColumns="Y" VariableValidation="STRICT" NewVariableRole="REJECT" DropMapVariables="Y" DsId="cascrash" DsSampleName="" DsSampleSizeType="" DsSampleSize="" DsCreatedBy="sasdemo" DsCreateDate="1865687349.9" DsModifiedBy="sasdemo" DsModifyDate="1865687349.9" DsScope="LOCAL" Sample="D" SampleSizeType="PERCENT" SampleSizePercent="20" SampleSizeObs="10000" DBPassThrough="Y" RunAction="Train" Component="DataSource" Description="">
+<NODE CLASS="SASHELP.EMSAMP.IDS.CLASS" COMPONENT="DataSource" ID="Ids" X="199" Y="103" DESCRIPTION="CAS_CRASH" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="SAMPLE" TOOLPREFIX="Ids">
+<PROPERTIES DataSource="cascrash" Scope="LOCAL" Role="RAW" Library="HOW" Table="CAS_CRASH" NCols="74" NObs="665847" NBytes="459408384" Segment="" DataSourceRole="RAW" OutputType="VIEW" ForceRun="N" ComputeStatistics="N" DataSelection="DATASOURCE" NewTable="" MetaAdvisor="BASIC" ApplyIntervalLevelLowerLimit="Y" IntervalLowerLimit="20" ApplyMaxPercentMissing="Y" MaxPercentMissing="50" ApplyMaxClassLevels="Y" MaxClassLevels="20" IdentifyEmptyColumns="Y" VariableValidation="STRICT" NewVariableRole="REJECT" DropMapVariables="Y" DsId="cascrash" DsSampleName="" DsSampleSizeType="" DsSampleSize="" DsCreatedBy="student" DsCreateDate="1870832649.5" DsModifiedBy="student" DsModifyDate="1870832649.5" DsScope="LOCAL" Sample="D" SampleSizeType="PERCENT" SampleSizePercent="20" SampleSizeObs="10000" DBPassThrough="Y" RunAction="Train" Component="DataSource" Description="">
 <VariableProperties/>
 <EmVariableAttributes>
 <DELTA Variable="OBJECTID" AttributeName="ROLE" AttributeValue="ID"/>
@@ -66,11 +67,8 @@ importance(&amp;XXXXMODELXXXX)
 <DELTA Variable="carStationWagon" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="cliffBank" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="cornerRoadSideRoad" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
-<DELTA Variable="crashRPDirectionDescription" AttributeName="ROLE" AttributeValue="REJECTED"/>
-<DELTA Variable="crashRPDirectionDescription" AttributeName="LEVEL" AttributeValue="UNARY"/>
-<DELTA Variable="crashRPNewsDescription" AttributeName="ROLE" AttributeValue="REJECTED"/>
-<DELTA Variable="crashRPNewsDescription" AttributeName="LEVEL" AttributeValue="UNARY"/>
 <DELTA Variable="crashRPSH" AttributeName="ROLE" AttributeValue="REJECTED"/>
+<DELTA Variable="crashRPSH" AttributeName="COMMENT" AttributeValue="Exceeds maximum number of levels cutoff"/>
 <DELTA Variable="crashSHDescription" AttributeName="LEVEL" AttributeValue="BINARY"/>
 <DELTA Variable="debris" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="ditch" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
@@ -89,7 +87,6 @@ importance(&amp;XXXXMODELXXXX)
 <DELTA Variable="parkedVehicle" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="phoneBoxEtc" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="postOrPole" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
-<DELTA Variable="roadLane" AttributeName="LEVEL" AttributeValue="BINARY"/>
 <DELTA Variable="roadworks" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="schoolBus" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="slipFlood" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
@@ -99,65 +96,18 @@ importance(&amp;XXXXMODELXXXX)
 <DELTA Variable="taxi" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="temporarySpeedLimit" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="tlaName" AttributeName="ROLE" AttributeValue="REJECTED"/>
+<DELTA Variable="tlaName" AttributeName="COMMENT" AttributeValue="Exceeds maximum number of levels cutoff"/>
 <DELTA Variable="trafficIsland" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="trafficSign" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="train" AttributeName="LEVEL" AttributeValue="BINARY"/>
 <DELTA Variable="tree" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="truck" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="unknownVehicleType" AttributeName="LEVEL" AttributeValue="BINARY"/>
-<DELTA Variable="urban" AttributeName="LEVEL" AttributeValue="BINARY"/>
-<DELTA Variable="vanOrUtility" AttributeName="LEVEL" AttributeValue="BINARY"/>
+<DELTA Variable="vanOrUtility" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="vehicle" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 <DELTA Variable="waterRiver" AttributeName="LEVEL" AttributeValue="NOMINAL"/>
 </EmVariableAttributes>
-<EmTargetAttributes>
-<target>
-<DecData Table="EMWS4.Ids_target_DD">
-<Data>
-<Obs TARGET="1" COUNT="43480" DATAPRIOR="0.0644793897" TRAINPRIOR="0.0644793897" DECPRIOR="." DECISION1="1" DECISION2="0"/>
-<Obs TARGET="0" COUNT="630844" DATAPRIOR="0.9355206103" TRAINPRIOR="0.9355206103" DECPRIOR="." DECISION1="0" DECISION2="1"/>
-</Data>
-<Metadata>
-<Variable NAME="target" LABEL="" LENGTH="32" FORMAT="" TYPE="C"/>
-<Variable NAME="COUNT" LABEL="Level Counts" LENGTH="8" FORMAT="10." TYPE="N"/>
-<Variable NAME="DATAPRIOR" LABEL="Data Proportions" LENGTH="8" FORMAT="" TYPE="N"/>
-<Variable NAME="TRAINPRIOR" LABEL="Training Proportions" LENGTH="8" FORMAT="" TYPE="N"/>
-<Variable NAME="DECPRIOR" LABEL="Decision Priors" LENGTH="8" FORMAT="" TYPE="N"/>
-<Variable NAME="DECISION1" LABEL="1" LENGTH="8" FORMAT="" TYPE="N"/>
-<Variable NAME="DECISION2" LABEL="0" LENGTH="8" FORMAT="" TYPE="N"/>
-</Metadata>
-</DecData>
-<DecMeta Table="EMWS4.Ids_target_DM">
-<Data>
-<Obs _TYPE_="MATRIX" VARIABLE="" LABEL="" LEVEL="PROFIT" EVENT="" ORDER="" FORMAT="" TYPE="" COST="" USE="N"/>
-<Obs _TYPE_="TARGET" VARIABLE="target" LABEL="" LEVEL="BINARY" EVENT="1" ORDER="" FORMAT="" TYPE="N" COST="" USE=""/>
-<Obs _TYPE_="DECISION" VARIABLE="DECISION1" LABEL="1" LEVEL="" EVENT="" ORDER="" FORMAT="" TYPE="N" COST="" USE="Y"/>
-<Obs _TYPE_="DECISION" VARIABLE="DECISION2" LABEL="0" LEVEL="" EVENT="" ORDER="" FORMAT="" TYPE="N" COST="" USE="Y"/>
-<Obs _TYPE_="DATAPRIOR" VARIABLE="DATAPRIOR" LABEL="Data Prior" LEVEL="" EVENT="" ORDER="" FORMAT="" TYPE="N" COST="" USE="N"/>
-<Obs _TYPE_="TRAINPRIOR" VARIABLE="TRAINPRIOR" LABEL="Training Prior" LEVEL="" EVENT="" ORDER="" FORMAT="" TYPE="N" COST="" USE="N"/>
-<Obs _TYPE_="DECPRIOR" VARIABLE="DECPRIOR" LABEL="Decision Prior" LEVEL="" EVENT="" ORDER="" FORMAT="" TYPE="N" COST="" USE="N"/>
-<Obs _TYPE_="PREDICTED" VARIABLE="P_target1" LABEL="Predicted: target=1" LEVEL="1" EVENT="" ORDER="" FORMAT="" TYPE="N" COST="" USE=""/>
-<Obs _TYPE_="RESIDUAL" VARIABLE="R_target1" LABEL="Residual: target=1" LEVEL="1" EVENT="" ORDER="" FORMAT="" TYPE="N" COST="" USE=""/>
-<Obs _TYPE_="PREDICTED" VARIABLE="P_target0" LABEL="Predicted: target=0" LEVEL="0" EVENT="" ORDER="" FORMAT="" TYPE="N" COST="" USE=""/>
-<Obs _TYPE_="RESIDUAL" VARIABLE="R_target0" LABEL="Residual: target=0" LEVEL="0" EVENT="" ORDER="" FORMAT="" TYPE="N" COST="" USE=""/>
-<Obs _TYPE_="FROM" VARIABLE="F_target" LABEL="From: target" LEVEL="" EVENT="" ORDER="" FORMAT="" TYPE="C" COST="" USE=""/>
-<Obs _TYPE_="INTO" VARIABLE="I_target" LABEL="Into: target" LEVEL="" EVENT="" ORDER="" FORMAT="" TYPE="C" COST="" USE=""/>
-</Data>
-<Metadata>
-<Variable NAME="_TYPE_" LABEL="Type" LENGTH="32" FORMAT="" TYPE="C"/>
-<Variable NAME="VARIABLE" LABEL="Variable" LENGTH="32" FORMAT="" TYPE="C"/>
-<Variable NAME="LABEL" LABEL="Label" LENGTH="256" FORMAT="" TYPE="C"/>
-<Variable NAME="LEVEL" LABEL="Measurement Level" LENGTH="32" FORMAT="" TYPE="C"/>
-<Variable NAME="EVENT" LABEL="Target Event" LENGTH="32" FORMAT="" TYPE="C"/>
-<Variable NAME="ORDER" LABEL="Order" LENGTH="10" FORMAT="" TYPE="C"/>
-<Variable NAME="FORMAT" LABEL="Format" LENGTH="32" FORMAT="" TYPE="C"/>
-<Variable NAME="TYPE" LABEL="Type" LENGTH="1" FORMAT="" TYPE="C"/>
-<Variable NAME="COST" LABEL="Cost" LENGTH="32" FORMAT="" TYPE="C"/>
-<Variable NAME="USE" LABEL="Use" LENGTH="1" FORMAT="" TYPE="C"/>
-</Metadata>
-</DecMeta>
-</target>
-</EmTargetAttributes>
+<EmTargetAttributes/>
 <EmFileProperties>
 <EMNOTES Type="EXTERNAL" Extension="txt">
 <Data/>
@@ -165,7 +115,7 @@ importance(&amp;XXXXMODELXXXX)
 </EmFileProperties>
 </PROPERTIES>
 </NODE>
-<NODE CLASS="SASHELP.EMMDFY.EMIMPUTE.CLASS" COMPONENT="Impute" ID="Impt" X="773" Y="101" DESCRIPTION="Impute" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODIFY" TOOLPREFIX="Impt">
+<NODE CLASS="SASHELP.EMMDFY.EMIMPUTE.CLASS" COMPONENT="Impute" ID="Impt" X="791" Y="101" DESCRIPTION="Impute" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODIFY" TOOLPREFIX="Impt">
 <PROPERTIES MethodInterval="MEAN" MethodClass="COUNT" MethodTargetInterval="NONE" MethodTargetClass="NONE" ABWTuning="9" AHUBERTuning="1.5" AWAVETuning="6.2831853072" SpacingProportion="90" DefaultChar="" DefaultNum="." RandomSeed="12345" Normalize="Y" ImputeNoMissing="N" MaxPctMissing="50" ValidateTestMissing="N" DistributionMissing="N" LeafSize="5" Maxbranch="2" Maxdepth="6" MinCatSize="5" Nrules="5" Nsurrs="2" Splitsize="." Indicator="NONE" IndicatorRole="REJECTED" ReplaceVariable="N" HideVariable="Y" IndicatorSource="IMPUTED" ForceRun="N" RunAction="Train" Component="Impute">
 <VariableProperties/>
 <EmTargetAttributes/>
@@ -177,7 +127,7 @@ importance(&amp;XXXXMODELXXXX)
 </EmFileProperties>
 </PROPERTIES>
 </NODE>
-<NODE CLASS="SASHELP.EMASSMT.ASSESS.CLASS" COMPONENT="ModelCompare" ID="MdlComp" X="1668" Y="195" DESCRIPTION="Model Comparison" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="ASSESS" TOOLPREFIX="MdlComp">
+<NODE CLASS="SASHELP.EMASSMT.ASSESS.CLASS" COMPONENT="ModelCompare" ID="MdlComp" X="1686" Y="195" DESCRIPTION="Model Comparison" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="ASSESS" TOOLPREFIX="MdlComp">
 <PROPERTIES NumberOfReportedLevels="1E-6" NormalizeReportingVariables="Y" DecileBin="20" LiftEpsilon="1E-6" ProfitEpsilon="1E-6" RoiEpsilon="1E-6" ScoreDistBin="20" RocChart="Y" RocEpsilon="0.01" AssessAllTargetLevels="N" SelectionData="DEFAULT" HPCriteria="DEFAULT" intervalViyaCriteria="DEFAULT" classViyaCriteria="DEFAULT" SelectionTable="VALIDATE" SelectionCriteria="_ASE_" SelectionDepth="10" NumberofBins="20" RecomputeAssess="N" TargetName="target" ModelId="HPDMForest" ModelDescription="HPDMForest" ModelCriteria="Valid: Average Squared Error" ForceRun="N" RunAction="Train" Component="ModelCompare" StatisticUsed="_VASE_" TargetLabel="">
 <VariableProperties/>
 <EmTargetAttributes/>
@@ -188,10 +138,11 @@ importance(&amp;XXXXMODELXXXX)
 </EmFileProperties>
 </PROPERTIES>
 </NODE>
-<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="ModelImport" ID="MdlImp" X="1523" Y="103" DESCRIPTION="Model Import" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODEL" TOOLPREFIX="MdlImp">
+<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="ModelImport" ID="MdlImp" X="1541" Y="103" DESCRIPTION="Model Import" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODEL" TOOLPREFIX="MdlImp">
 <PROPERTIES Location="CATALOG" Catalog="SASHELP.EMMODL.MODELIMPORT.SOURCE" ImportType="DATA" ApplyDecisions="N" ForceRun="N" RunAction="Train" Component="ModelImport" DataNeeded="Y" ModelName="" ModelPath="">
 <VariableProperties/>
 <EmTargetAttributes/>
+<EmVariableAttributes/>
 <EmFileProperties>
 <USERTRAINCODE Type="EXTERNAL" Extension="sas">
 <Data/>
@@ -236,7 +187,7 @@ importance(&amp;XXXXMODELXXXX)
 </EmFileProperties>
 </PROPERTIES>
 </NODE>
-<NODE CLASS="SASHELP.EMSAMP.EMDPART.CLASS" COMPONENT="Partition" ID="Part" X="575" Y="101" DESCRIPTION="Part" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="SAMPLE" TOOLPREFIX="Part">
+<NODE CLASS="SASHELP.EMSAMP.EMDPART.CLASS" COMPONENT="Partition" ID="Part" X="593" Y="101" DESCRIPTION="Part" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="SAMPLE" TOOLPREFIX="Part">
 <PROPERTIES Method="DEFAULT" TrainPct="70" ValidatePct="30" TestPct="0" RandomSeed="12345" OutputType="DATA" IntervalDistribution="Y" ClassDistribution="Y" ForceRun="N" RunAction="Train" Component="Partition">
 <VariableProperties/>
 <EmTargetAttributes/>
@@ -248,7 +199,7 @@ importance(&amp;XXXXMODELXXXX)
 </EmFileProperties>
 </PROPERTIES>
 </NODE>
-<NODE CLASS="SASHELP.EMSAMP.SAMPLING.CLASS" COMPONENT="Sample" ID="Smpl" X="377" Y="101" DESCRIPTION="Sample" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="SAMPLE" TOOLPREFIX="Smpl">
+<NODE CLASS="SASHELP.EMSAMP.SAMPLING.CLASS" COMPONENT="Sample" ID="Smpl" X="395" Y="101" DESCRIPTION="Sample" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="SAMPLE" TOOLPREFIX="Smpl">
 <PROPERTIES Method="DEFAULT" SizeType="PERCENT" SizePercent="10" SizeObs="." RandomSeed="12345" Alpha="0.01" Pvalue="0.01" AdjustFreq="N" FreqMiss="N" FreqCount="N" StratifyCriterion="EQUAL" MinStrataSize="5" IgnoreSmallStrata="N" ClusterMethod="RANDOM" LevelProportion="100" LevelSampleProportion="50" LevelSelection="EVENT" OutputType="DATA" IntervalDistribution="Y" ClassDistribution="Y" ForceRun="N" RunAction="Train" Component="Sample">
 <VariableProperties/>
 <EmTargetAttributes/>
@@ -260,7 +211,7 @@ importance(&amp;XXXXMODELXXXX)
 </EmFileProperties>
 </PROPERTIES>
 </NODE>
-<NODE CLASS="SASHELP.EMMDFY.EMTRANS.CLASS" COMPONENT="Transform" ID="Trans" X="966" Y="102" DESCRIPTION="Transform Variables" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODIFY" TOOLPREFIX="Trans">
+<NODE CLASS="SASHELP.EMMDFY.EMTRANS.CLASS" COMPONENT="Transform" ID="Trans" X="984" Y="102" DESCRIPTION="Transform Variables" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="MODIFY" TOOLPREFIX="Trans">
 <PROPERTIES DefaultMethod="QUANTILE" DefaultTargetMethod="NONE" DefaultClassMethod="GROUP" DefaultClassTargetMethod="NONE" Offset="1" MinOffset="Y" HideVariable="N" RejectVariable="Y" GroupCutoff="0.1" GroupMissing="N" EmRandomSeed="12345" EmSampleSize="DEFAULT" EmSampleMethod="FIRSTN" MissingValue="USEINSEARCH" SummaryVariables="TRANSFORMED" SummaryStatistics="Y" UseMetaTransform="Y" MissingAsLevel="N" NumberofBins="VARIABLES" MaxOptimalBins="4" ForceRun="N" RunAction="Train" Component="Transform">
 <VariableProperties/>
 <EmTargetAttributes/>
@@ -280,7 +231,7 @@ importance(&amp;XXXXMODELXXXX)
 </EmFileProperties>
 </PROPERTIES>
 </NODE>
-<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="VariableClustering" ID="VarClus" X="1157" Y="101" DESCRIPTION="Variable Clustering" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="EXPLORE" TOOLPREFIX="VarClus">
+<NODE CLASS="SASHELP.EMCORE.EXTENSION.CLASS" COMPONENT="VariableClustering" ID="VarClus" X="1175" Y="101" DESCRIPTION="Variable Clustering" DIAGRAMID="_ROOT_" PARENTID="" TOOLTYPE="EXPLORE" TOOLPREFIX="VarClus">
 <PROPERTIES Location="CATALOG" Catalog="SASHELP.EMEXPL.VARIABLECLUSTERING.SOURCE" HideVariable="Y" MaxClus="." ClusSource="COV" ClusHierachy="Y" IncludeClassVar="Y" TwoStageClus="AUTO" SuppressSampWarn="N" ExportedComp="BESTVARWITHCOMP" MaxEigen="." Proportion="0" PrintOption="SHORT" ForceRun="N" RunAction="Train" Component="VariableClustering" DataNeeded="Y">
 <VariableProperties/>
 <EmTargetAttributes/>
@@ -297,19 +248,20 @@ importance(&amp;XXXXMODELXXXX)
 </NODE>
 </NODES>
 <CONNECTIONS>
-<CONNECTION FROM="Ids" TO="Smpl"/>
 <CONNECTION FROM="Smpl" TO="Part"/>
 <CONNECTION FROM="Part" TO="Impt"/>
-<CONNECTION FROM="Impt" TO="Trans"/>
 <CONNECTION FROM="Impt" TO="HPDMForest"/>
-<CONNECTION FROM="HPDMForest" TO="MdlComp"/>
+<CONNECTION FROM="Impt" TO="Trans"/>
 <CONNECTION FROM="Trans" TO="VarClus"/>
+<CONNECTION FROM="HPDMForest" TO="MdlComp"/>
 <CONNECTION FROM="VarClus" TO="EMOPEN"/>
 <CONNECTION FROM="EMOPEN" TO="MdlImp"/>
 <CONNECTION FROM="MdlImp" TO="MdlComp"/>
+<CONNECTION FROM="Ids" TO="Smpl"/>
 </CONNECTIONS>
 <NOTES>
 <DATA><![CDATA[
+
 
 ]]>
 </DATA>

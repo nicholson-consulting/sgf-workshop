@@ -24,7 +24,7 @@ HISTORY:
 
 /* setup variables */
 libname how 'D:\Workshop\HOW';
-%let in_path = D:\Workshop\HOW;     /* path to where the csv file is located */
+%let in_path = D:\Workshop\HOW\data;     /* path to where the csv file is located */
 %let out_lib = how;                 /* location where the sas dataset will reside */
 
 data work.temp;

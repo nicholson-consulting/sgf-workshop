@@ -10,13 +10,14 @@
 # DEPENDENCIES: 
 # swat package must be installed
 # authinfo file must contain credentials to connect to the server
-# D:\Workshop\HOW\cas_crash.csv must exist
+# D:\Workshop\HOW\data\cas_crash.csv must exist
 #
 # NOTES:
 # code is versioned and publicly available so the credentials have been ommited
 # you will need to specify the server name and port number prior to running this
 #
 # HISTORY:
+# 13 Apr 2019 EW updated after testing on image
 # 12 Feb 2019 EW v1
 #################################################################################
 
@@ -30,11 +31,12 @@ options(cas.trace.actions = FALSE)
 options(cas.print.messages = TRUE)
 
 # location where the data is stored
-setwd("D:/Workshop/HOW")
+setwd("D:/Workshop/HOW/data")
 
 #### load data ####
 # Exercise 4a - connecting to CAS
 conn2cas <- CAS("server-name", port_number, protocol="http")
+cas.builtins.about(conn2cas)
 
 # load dataset into memory
 castbl_cas_crash <- cas.read.csv(conn2cas, "cas_crash.csv")
