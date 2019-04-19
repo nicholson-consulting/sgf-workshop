@@ -86,12 +86,12 @@ Internet access so that attendees can look at the online data dictionary
 
 ### Installation
 1. Create the directory `D:/Workshop/HOW`
-2. Create file `D:/Workshop/HOW/cas_crash.csv` this can be done using the link in `./data/CAS-metadata.txt` or accessing the zipped csv file if you access to it. Warning using the link means that you will have the latest version of the data not the version that the workshop was built on
+2. Create file `D:/Workshop/HOW/data/cas_crash.csv` this can be done using the link in `./data/CAS-metadata.txt` or accessing the zipped csv file if you access to it. Warning using the link means that you will have the latest version of the data not the version that the workshop was built on
 3. Run `./startup/autoexec.sas` and confirm that the output you get is the same as `./startup/autoexec.html`
 4. Open up `./solutions/Ex-4-Solution.R`, read the dependencies and notes. Once you have sorted out the dependencies and the notes you can run the script and confirm that you get `./results/Ex-4.out`
 5. An Enterprise Miner Project is required. A zipped EM project can be provided on request in which case carry on at step 10. Alternatively, one can be created from scratch by following the subsequent steps
 6. Create the EM Project. The project name is `HOW-Open-Source-Integration`, directory is `D:/Workshop/HOW`, the default metadata server and default application server can be used
-7. Create a library called `how` that points to `D:/Workshop/HOW`
+7. Create a library called `how` that points to `D:/Workshop/HOW/data`
 8. Create the data source. The file you will choose is `cas_crash.sas7bdat` use all the default settings up to step 4. At step 4 check the `advanced` metadata option. At step 5 you will need to change the role of `OBJECTID` to an `ID` then you can accept all the other defaults and hit next until you can hit finish
 9. Import the diagrams `./exercises/Ex-1.xml`, `./solutions.Ex-1-Solution.xml`, `./exercises/Ex-2-3.xml` and `./solutions/Ex-2-3-Solution.xml`
 10. Open `./solutions/Ex-1-Solution.xml` and run the diagram. Confirm that you get the results listed in `./solutions/Ex-1.log`
